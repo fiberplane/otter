@@ -53,12 +53,13 @@ App READMEs do NOT contain:
 |-----|-------|
 | [effect.md](patterns/effect.md) | Effect conventions, service architecture, code smells |
 | [coding-style.md](patterns/coding-style.md) | TypeScript coding style, early returns, type safety |
+| [observability.md](patterns/observability.md) | Effect + OpenTelemetry tracing and logging setup |
 
 ### templates/
 
 | Doc | Topic |
 |-----|-------|
-| *cli.md* | How to build an Effect CLI (coming soon) |
+| [cli.md](templates/cli.md) | How to build an Effect CLI with Bun + yargs |
 
 ### architecture/
 

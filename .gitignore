@@ -9,3 +9,9 @@
 
 # Codex local config (contains user-specific absolute paths)
 .codex/config.local.toml
+
+# Cloned upstream repos for agent reference
+references/
+
+# Dependencies
+node_modules/
