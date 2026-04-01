@@ -1,0 +1,56 @@
+id: no-else-after-return
+snapshots:
+  ? |
+    function getSpanStatusComponent(spanStatus: string | undefined) {
+      if (spanStatus === undefined) {
+        throw new Error("Encountered an unknown status");
+      } else if (spanStatus === "error") {
+        return ErrorStatusComponent;
+      } else {
+        return OkStatusComponent;
+      }
+    }
+  : labels:
+    - source: |-
+        if (spanStatus === "error") {
+            return ErrorStatusComponent;
+          } else {
+            return OkStatusComponent;
+          }
+      style: primary
+      start: 163
+      end: 270
+  ? |
+    if (spanStatus === "error") {
+      return ErrorStatusComponent;
+    } else if (spanStatus === "ok") {
+      return OkStatusComponent;
+    } else {
+      return SpecialStatusComponent;
+    }
+  : labels:
+    - source: |-
+        if (spanStatus === "ok") {
+          return OkStatusComponent;
+        } else {
+          return SpecialStatusComponent;
+        }
+      style: primary
+      start: 68
+      end: 166
+  ? |
+    if (status === "connected") {
+      return true;
+    } else {
+      return false;
+    }
+  : labels:
+    - source: |-
+        if (status === "connected") {
+          return true;
+        } else {
+          return false;
+        }
+      style: primary
+      start: 0
+      end: 71

@@ -1,0 +1,48 @@
+id: no-interface-in-models
+snapshots:
+  ? |
+    export interface ExtensionComment {
+      readonly id: string;
+      readonly issueId: string;
+      readonly content: string;
+      readonly createdAt: string;
+    }
+  : labels:
+    - source: |-
+        export interface ExtensionComment {
+          readonly id: string;
+          readonly issueId: string;
+          readonly content: string;
+          readonly createdAt: string;
+        }
+      style: primary
+      start: 0
+      end: 146
+  ? |
+    export interface FpExtensionContext {
+      readonly runtime: ExtensionRuntime;
+      readonly issues: ExtensionIssueAccessPromise;
+    }
+  : labels:
+    - source: |-
+        export interface FpExtensionContext {
+          readonly runtime: ExtensionRuntime;
+          readonly issues: ExtensionIssueAccessPromise;
+        }
+      style: primary
+      start: 0
+      end: 125
+  ? |
+    export interface IssueListFilter {
+      readonly status?: string;
+      readonly parent?: string | null;
+    }
+  : labels:
+    - source: |-
+        export interface IssueListFilter {
+          readonly status?: string;
+          readonly parent?: string | null;
+        }
+      style: primary
+      start: 0
+      end: 99

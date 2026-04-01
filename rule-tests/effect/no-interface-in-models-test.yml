@@ -1,0 +1,42 @@
+id: no-interface-in-models
+
+valid:
+  - |
+    export const ExtensionComment = Schema.Struct({
+      id: Schema.String,
+      issueId: Schema.String,
+      content: Schema.String,
+      createdAt: Schema.String,
+    });
+    export type ExtensionComment = Schema.Schema.Type<typeof ExtensionComment>;
+  - |
+    export type Priority = Schema.Schema.Type<typeof Priority>;
+  - |
+    export const Status = Schema.Literal("todo", "in-progress", "done");
+    export type Status = Schema.Schema.Type<typeof Status>;
+  - |
+    export type Ref = Data.TaggedEnum<{
+      Git: { readonly sha: string };
+      JJ: { readonly changeId: string };
+    }>;
+  - |
+    export type ExtensionRuntime = "cli" | "desktop";
+
+invalid:
+  - |
+    export interface FpExtensionContext {
+      readonly runtime: ExtensionRuntime;
+      readonly issues: ExtensionIssueAccessPromise;
+    }
+  - |
+    export interface ExtensionComment {
+      readonly id: string;
+      readonly issueId: string;
+      readonly content: string;
+      readonly createdAt: string;
+    }
+  - |
+    export interface IssueListFilter {
+      readonly status?: string;
+      readonly parent?: string | null;
+    }

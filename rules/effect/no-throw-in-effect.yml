@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-throw-in-effect-generator
+language: tsx
+severity: error
+message: "Use Effect.fail instead of throw in Effect generators"
+
+rule:
+  pattern: throw $ERROR
+  inside:
+    pattern: Effect.gen($$$BODY)
+    stopBy: end
+  not:
+    inside:
+      # Exclude yargs .check() callbacks - throws are valid there for validation
+      pattern: $OBJ.check($CALLBACK)
+      stopBy: end
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Effect generators should use Effect.fail() for error handling,
+  not throw statements. Throwing exceptions breaks Effect's type-safe
+  error channel.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  Effect.gen(function* () {
+    if (!data) {
+      throw new Error("Missing data");
+    }
+  });
+
+  // ✅ Good
+  Effect.gen(function* () {
+    if (!data) {
+      yield* Effect.fail(new MissingDataError());
+    }
+  });
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

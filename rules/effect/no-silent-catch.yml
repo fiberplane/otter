@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-silent-catch
+language: tsx
+severity: error
+message: "Silent error swallowing - log the error before recovering with Effect.catchAll"
+
+rule:
+  pattern: Effect.catchAll($FN)
+  has:
+    any:
+      - pattern: Effect.succeed($$$VAL)
+      - pattern: Effect.succeed<$TYPE>($$$VAL)
+    stopBy: end
+  not:
+    has:
+      any:
+        - pattern: Effect.log($$$ARGS)
+        - pattern: Effect.logWarning($$$ARGS)
+        - pattern: Effect.logError($$$ARGS)
+        - pattern: Effect.logDebug($$$ARGS)
+        - pattern: Effect.logInfo($$$ARGS)
+      stopBy: end
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Silently swallowing errors with Effect.catchAll hides failures and makes
+  debugging impossible. Always log the error before recovering.
+
+  Example:
+  ```typescript
+  // ❌ Bad - error silently disappears
+  Effect.catchAll(() => Effect.succeed([]))
+
+  // ✅ Good - log before recovering
+  Effect.catchAll((err) =>
+    Effect.logWarning("Falling back due to error", err).pipe(
+      Effect.map(() => []),
+    ),
+  )
+
+  // ✅ Good - use tapError + catchAll
+  Effect.tapError((err) => Effect.logWarning("Recovering from", err)),
+  Effect.catchAll(() => Effect.succeed([])),
+
+  // ✅ Good - catch specific errors instead
+  Effect.catchTag("NetworkError", (err) =>
+    Effect.logWarning("Network unavailable, using cache").pipe(
+      Effect.map(() => cachedValue),
+    ),
+  )
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

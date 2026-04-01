@@ -1,0 +1,16 @@
+id: no-bare-new-error
+snapshots:
+  ? |
+    desktopRuntime.runSync(Deferred.fail(entry.deferred, new Error(message.error)));
+  : labels:
+    - source: new Error(message.error)
+      style: primary
+      start: 53
+      end: 77
+  ? |
+    return Effect.fail(new Error("Extension host is not initialized"));
+  : labels:
+    - source: new Error("Extension host is not initialized")
+      style: primary
+      start: 19
+      end: 65

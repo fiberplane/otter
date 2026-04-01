@@ -1,0 +1,57 @@
+id: no-silent-catch
+snapshots:
+  ? |
+    Effect.catchAll(() => Effect.succeed([]))
+  : labels:
+    - source: Effect.catchAll(() => Effect.succeed([]))
+      style: primary
+      start: 0
+      end: 41
+    - source: Effect.succeed([])
+      style: secondary
+      start: 22
+      end: 40
+  ? |
+    Effect.catchAll(() => Effect.succeed(undefined))
+  : labels:
+    - source: Effect.catchAll(() => Effect.succeed(undefined))
+      style: primary
+      start: 0
+      end: 48
+    - source: Effect.succeed(undefined)
+      style: secondary
+      start: 22
+      end: 47
+  ? |
+    Effect.catchAll(() => Effect.succeed<string | undefined>(undefined))
+  : labels:
+    - source: Effect.catchAll(() => Effect.succeed<string | undefined>(undefined))
+      style: primary
+      start: 0
+      end: 68
+    - source: Effect.succeed<string | undefined>(undefined)
+      style: secondary
+      start: 22
+      end: 67
+  ? |
+    Effect.catchAll((_) => Effect.succeed(null))
+  : labels:
+    - source: Effect.catchAll((_) => Effect.succeed(null))
+      style: primary
+      start: 0
+      end: 44
+    - source: Effect.succeed(null)
+      style: secondary
+      start: 23
+      end: 43
+  ? |
+    Effect.catchAll((_err) => Effect.succeed("fallback"))
+  : labels:
+    - source: Effect.catchAll((_err) => Effect.succeed("fallback"))
+      style: primary
+      start: 0
+      end: 53
+    - source: Effect.succeed("fallback")
+      style: secondary
+      start: 26
+      end: 52

@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-runpromise-in-effect
+language: tsx
+severity: error
+message: "Avoid Effect.runPromise/runSync - use yield* in Effect.gen or Runtime.runPromise at boundaries"
+
+rule:
+  any:
+    - pattern: Effect.runPromise($$$ARGS)
+    - pattern: Effect.runSync($$$ARGS)
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Effect.runPromise and Effect.runSync should almost never appear in Effect code.
+  Use yield* within Effect.gen instead. Only use Runtime.runPromise at application
+  boundaries (like Hono handlers).
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  Effect.gen(function* () {
+    const result = await Effect.runPromise(someEffect);
+    return result;
+  });
+
+  // ✅ Good
+  Effect.gen(function* () {
+    const result = yield* someEffect;
+    return result;
+  });
+
+  // ✅ Good (at boundary)
+  app.get("/api/data", async (c) => {
+    const runtime = c.get("runtime");
+    return Runtime.runPromise(runtime)(getDataEffect);
+  });
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"
+  - "**/layers.ts"
+  - "**/index.ts"
+  - "**/test-utils/**"

@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-else-after-return
+language: tsx
+severity: error
+message: "Unnecessary else after return - prefer early return pattern"
+
+rule:
+  pattern: |
+    if ($COND) {
+      $$$BODY1
+      return $$$RET
+    } else {
+      $$$BODY2
+    }
+
+note: |
+  Avoid else blocks after return statements. Use early returns instead
+  for cleaner, less nested code.
+  
+  See AGENTS.md Development Patterns section 6.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  if (status === "connected") {
+    return true;
+  } else {
+    return false;
+  }
+
+  // ✅ Good
+  if (status === "connected") {
+    return true;
+  }
+  
+  return false;
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"
+  - "**/opensrc/**"
+  - "**/scripts/**"

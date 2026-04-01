@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-foreach
+language: tsx
+severity: error
+message: "Prefer for...of over forEach for better performance"
+
+rule:
+  pattern: $ARRAY.forEach($$$ARGS)
+  not:
+    pattern: Effect.forEach($$$ARGS)
+
+note: |
+  Use `for...of` loops instead of `forEach` for better performance.
+  See AGENTS.md Development Patterns section 2.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  items.forEach(item => process(item));
+
+  // ✅ Good
+  for (const item of items) {
+    process(item);
+  }
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"
+  - "**/opensrc/**"
+  - "**/scripts/**"
+

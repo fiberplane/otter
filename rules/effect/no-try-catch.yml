@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-try-catch-in-effect
+language: tsx
+severity: error
+message: "Avoid try-catch in Effect code - use Effect.try or Effect.catchTag instead"
+
+rule:
+  kind: try_statement
+  inside:
+    pattern: Effect.gen($$$BODY)
+    stopBy: end
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Effect code should avoid try-catch blocks. Use Effect's error handling:
+  - Effect.try() for wrapping code that might throw
+  - Effect.catchTag() for handling tagged errors
+  - Effect.catchAll() for catching all errors
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  try {
+    const result = riskyOperation();
+  } catch (e) {
+    console.error(e);
+  }
+
+  // ✅ Good
+  const result = yield* Effect.try({
+    try: () => riskyOperation(),
+    catch: (e) => new OperationError({ cause: e })
+  });
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

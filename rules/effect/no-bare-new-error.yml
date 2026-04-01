@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-bare-new-error
+language: tsx
+severity: error
+message: "Use tagged/domain errors instead of bare new Error(...)"
+
+rule:
+  pattern: new Error($$$ARGS)
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Avoid constructing generic Error instances in Effect code.
+  Prefer Data.TaggedError classes with structured fields so failures are typed,
+  matchable via Effect.catchTag, and properly filtered from Sentry reporting.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  Effect.fail(new Error("No VCS detected"));
+
+  // ✅ Good
+  Effect.fail(new NoVcsDetectedError());
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

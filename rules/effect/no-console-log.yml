@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-console-log
+language: tsx
+severity: error
+message: "Use Effect logging utilities (Effect.log, Effect.logWarning, Effect.logError) instead of console methods"
+
+rule:
+  any:
+    - pattern: console.log($$$ARGS)
+    - pattern: console.warn($$$ARGS)
+    - pattern: console.error($$$ARGS)
+    - pattern: console.info($$$ARGS)
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Effect codebases should use Effect's logging utilities instead of console methods.
+  This ensures logging is properly managed within the Effect context and can be
+  configured, filtered, and tested.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  console.log("Processing data:", data);
+  console.error("Failed to fetch:", error);
+  console.warn("Deprecated feature");
+
+  // ✅ Good
+  yield* Effect.log("Processing data:", data);
+  yield* Effect.logError("Failed to fetch:", error);
+  yield* Effect.logWarning("Deprecated feature");
+
+  // ✅ Good (standalone)
+  Effect.log("Processing data:", data);
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

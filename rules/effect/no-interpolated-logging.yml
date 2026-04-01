@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-interpolated-logging
+language: tsx
+severity: error
+message: "Use static log messages with structured fields (no template interpolation in logger calls)"
+
+rule:
+  any:
+    - pattern: $LOGGER.$METHOD(`$HEAD${$EXPR}$TAIL`)
+    - pattern: $LOGGER.$METHOD($LEFT + $RIGHT)
+    - pattern: Effect.logInfo(`$HEAD${$EXPR}$TAIL`)
+    - pattern: Effect.logWarning(`$HEAD${$EXPR}$TAIL`)
+    - pattern: Effect.logError(`$HEAD${$EXPR}$TAIL`)
+    - pattern: Effect.logDebug(`$HEAD${$EXPR}$TAIL`)
+
+constraints:
+  METHOD:
+    regex: "^(debug|info|warn|error)$"
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Prefer:
+  - logger.info("Issue updated", { issueId, status })
+  - logger.error("Issue update failed", { issueId, error })
+
+  Avoid:
+  - logger.info(`Issue ${issueId} updated`)
+  - logger.error("Issue " + issueId + " failed")
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"

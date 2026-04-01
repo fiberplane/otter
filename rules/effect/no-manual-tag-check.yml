@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-manual-tag-check
+language: tsx
+severity: error
+message: "Use Effect.catchTag, Data.taggedEnum $match, or Either.isLeft/isRight instead of manual _tag checking"
+
+rule:
+  any:
+    - pattern: $VAR._tag === $TAG
+    - pattern: $VAR._tag == $TAG
+    - pattern: $TAG === $VAR._tag
+    - pattern: $TAG == $VAR._tag
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Manual _tag checking is error-prone and doesn't provide type narrowing.
+  Use Effect's built-in error handling, Match.tag, or Data.taggedEnum $match.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  if (error._tag === "IssueNotFoundError") {
+    console.log(error.issueId);
+  }
+
+  // ✅ Good - Effect.catchTag (for Effect error channels)
+  Effect.catchTag("IssueNotFoundError", (error) => {
+    return Effect.succeed(fallbackValue);
+  });
+
+  // ✅ Good - Match.tag (for exhaustive pattern matching)
+  Match.value(result).pipe(
+    Match.tag("Success", ({ data }) => `Got ${data}`),
+    Match.tag("Failed", ({ error }) => `Error: ${error}`),
+    Match.exhaustive,
+  );
+
+  // ✅ Good - Data.taggedEnum $match (for tagged union values)
+  MyUnion.$match(value, {
+    Success: ({ data }) => `Got ${data}`,
+    Failed: ({ error }) => `Error: ${error}`,
+  });
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

@@ -1,0 +1,56 @@
+id: no-else-after-return
+
+valid:
+  - |
+    if (status === "connected") {
+      return true;
+    }
+    
+    return false;
+  - |
+    if (spanStatus === undefined) {
+      throw new Error("Encountered an unknown status");
+    }
+
+    if (spanStatus === "error") {
+      return ErrorStatusComponent;
+    }
+    
+    if (spanStatus === "ok") {
+      return OkStatusComponent;
+    }
+
+    return SpecialStatusComponent;
+  - |
+    // No return in if block, else is fine
+    if (condition) {
+      doSomething();
+    } else {
+      doOther();
+    }
+
+invalid:
+  - |
+    if (status === "connected") {
+      return true;
+    } else {
+      return false;
+    }
+  - |
+    if (spanStatus === "error") {
+      return ErrorStatusComponent;
+    } else if (spanStatus === "ok") {
+      return OkStatusComponent;
+    } else {
+      return SpecialStatusComponent;
+    }
+  - |
+    function getSpanStatusComponent(spanStatus: string | undefined) {
+      if (spanStatus === undefined) {
+        throw new Error("Encountered an unknown status");
+      } else if (spanStatus === "error") {
+        return ErrorStatusComponent;
+      } else {
+        return OkStatusComponent;
+      }
+    }

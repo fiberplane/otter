@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-dynamic-import
+language: tsx
+severity: error
+message: "Avoid dynamic imports - use static imports instead"
+
+rule:
+  pattern: import($$$)
+
+note: |
+  Dynamic imports make code harder to analyze and bundle.
+  Use static imports unless absolutely necessary (e.g., React lazy loading).
+
+  Suppress with: // ast-grep-ignore: no-dynamic-import
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  const module = await import("./module");
+
+  // ✅ Good
+  import { something } from "./module";
+
+  // ✅ OK for React lazy loading (add ignore comment)
+  // ast-grep-ignore: no-dynamic-import
+  const LazyComponent = lazy(() => import("./HeavyComponent"));
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/*.d.ts"
+  - "**/node_modules/**"
+  - "**/opensrc/**"
+  - "**/scripts/**"

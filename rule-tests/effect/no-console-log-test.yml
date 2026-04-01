@@ -1,0 +1,33 @@
+id: no-console-log
+
+valid:
+  - |
+    Effect.gen(function* () {
+      yield* Effect.log("Processing data:", data);
+      return data;
+    });
+  - |
+    yield* Effect.logError("Failed to fetch:", error);
+  - |
+    yield* Effect.logWarning("Deprecated feature");
+  - |
+    // Standalone Effect.log is fine
+    Effect.log("Message");
+
+invalid:
+  - |
+    console.log("debug", data);
+  - |
+    Effect.gen(function* () {
+      console.error("Failed to fetch:", error);
+      return yield* Effect.fail(error);
+    });
+  - |
+    console.warn("This is deprecated");
+  - |
+    console.info("Starting process");
+  - |
+    function processData(data: unknown) {
+      console.log("Processing:", data);
+      return transformData(data);
+    }

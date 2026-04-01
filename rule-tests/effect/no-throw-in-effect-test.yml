@@ -1,0 +1,27 @@
+id: no-throw-in-effect-generator
+
+valid:
+  - |
+    Effect.gen(function* () {
+      if (!data) {
+        yield* Effect.fail(new MissingDataError());
+      }
+      return data;
+    });
+  - |
+    // throw outside Effect.gen is fine
+    function validate(x: unknown) {
+      if (!x) throw new Error("invalid");
+    }
+
+invalid:
+  - |
+    Effect.gen(function* () {
+      if (!data) {
+        throw new Error("Missing data");
+      }
+    });
+  - |
+    Effect.gen(function* () {
+      throw new ValidationError("invalid input");
+    });

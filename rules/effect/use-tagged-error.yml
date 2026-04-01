@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: use-tagged-error
+language: tsx
+severity: error
+message: "Use Data.TaggedError instead of extending Error directly"
+
+rule:
+  pattern: class $NAME extends Error { $$$BODY }
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Custom errors should extend Data.TaggedError for proper Effect integration.
+  TaggedError provides automatic _tag discrimination, structural equality,
+  and works seamlessly with Effect.catchTag.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  class IssueNotFoundError extends Error {
+    constructor(public issueId: string) {
+      super(`Issue ${issueId} not found`);
+    }
+  }
+
+  // ✅ Good
+  class IssueNotFoundError extends Data.TaggedError("IssueNotFoundError")<{
+    readonly issueId: string;
+  }> {
+    get message(): string {
+      return `Issue ${this.issueId} not found`;
+    }
+  }
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

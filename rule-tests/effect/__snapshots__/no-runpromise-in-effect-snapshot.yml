@@ -1,0 +1,49 @@
+id: no-runpromise-in-effect
+snapshots:
+  ? |
+    Effect.gen(function* () {
+      const result = await Effect.runPromise(someEffect);
+      return result;
+    });
+  : labels:
+    - source: Effect.runPromise(someEffect)
+      style: primary
+      start: 49
+      end: 78
+  ? |
+    Effect.gen(function* () {
+      const x = yield* step1;
+      const y = Effect.runPromise(step2);
+      return { x, y };
+    });
+  : labels:
+    - source: Effect.runPromise(step2)
+      style: primary
+      start: 64
+      end: 88
+  ? |
+    async function processData() {
+      const result = await Effect.runPromise(
+        Effect.gen(function* () {
+          return yield* fetchData();
+        })
+      );
+      return result;
+    }
+  : labels:
+    - source: |-
+        Effect.runPromise(
+            Effect.gen(function* () {
+              return yield* fetchData();
+            })
+          )
+      style: primary
+      start: 54
+      end: 146
+  ? |
+    const data = Effect.runSync(myEffect);
+  : labels:
+    - source: Effect.runSync(myEffect)
+      style: primary
+      start: 13
+      end: 37

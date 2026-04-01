@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-direct-fs-import
+language: tsx
+severity: error
+message: "Use Effect's FileSystem service instead of direct node:fs imports"
+
+rule:
+  any:
+    - pattern: import $_ from "node:fs"
+    - pattern: import $_ from "fs"
+    - pattern: import $_ from "node:fs/promises"
+    - pattern: import $_ from "fs/promises"
+    - pattern: require("node:fs")
+    - pattern: require("fs")
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Direct fs imports make code hard to test and don't integrate with Effect's
+  error handling. Use the injected FileSystem service instead.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  import fs from "node:fs";
+  const content = fs.readFileSync(path, "utf-8");
+
+  // ✅ Good
+  const readFile = Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const content = yield* fs.readFileString(path);
+    return content;
+  });
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"
+  # Test utilities use synchronous fs for test setup/teardown
+  - "**/test-utils/**"

@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-interface-in-models
+language: tsx
+severity: error
+message: "Use Schema.Struct instead of interface for domain models"
+
+rule:
+  pattern: export interface $NAME { $$$BODY }
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Domain models must use Effect Schema as the single source of truth.
+  Schema provides runtime validation, type inference, and encoding/decoding
+  in one place, keeping types and validation logic permanently in sync.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  export interface ExtensionComment {
+    readonly id: string;
+    readonly issueId: string;
+    readonly content: string;
+    readonly createdAt: string;
+  }
+
+  // ✅ Good
+  export const ExtensionComment = Schema.Struct({
+    id: Schema.String,
+    issueId: Schema.String,
+    content: Schema.String,
+    createdAt: Schema.String,
+  });
+  export type ExtensionComment = Schema.Schema.Type<typeof ExtensionComment>;
+  ```
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

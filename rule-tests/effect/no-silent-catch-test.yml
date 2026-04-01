@@ -1,0 +1,31 @@
+id: no-silent-catch
+
+valid:
+  - |
+    Effect.catchAll((err) =>
+      Effect.logWarning("Falling back", err).pipe(
+        Effect.map(() => []),
+      ),
+    )
+  - |
+    Effect.catchTag("NetworkError", (err) =>
+      Effect.succeed([]),
+    )
+  - |
+    Effect.catchAll((err) =>
+      Effect.logError("error", err).pipe(
+        Effect.map(() => []),
+      ),
+    )
+
+invalid:
+  - |
+    Effect.catchAll(() => Effect.succeed([]))
+  - |
+    Effect.catchAll((_) => Effect.succeed(null))
+  - |
+    Effect.catchAll(() => Effect.succeed(undefined))
+  - |
+    Effect.catchAll((_err) => Effect.succeed("fallback"))
+  - |
+    Effect.catchAll(() => Effect.succeed<string | undefined>(undefined))
