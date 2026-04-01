@@ -1,0 +1,25 @@
+{
+  "name": "@otter/root",
+  "private": true,
+  "scripts": {
+    "lint": "bun run --filter '*' lint",
+    "lint:ast": "bunx @ast-grep/cli scan",
+    "lint:drift": "drift lint",
+    "test": "bun run --filter '*' test",
+    "format": "bun run --filter '*' format",
+    "typecheck": "bun run --filter '*' typecheck",
+    "check": "bun run lint:ast && bun run lint:drift && bun run typecheck"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@ast-grep/cli": "^0.42.0",
+    "@biomejs/biome": "^2.4.10",
+    "@types/bun": "^1.2.14"
+  },
+  "trustedDependencies": [
+    "@ast-grep/cli"
+  ]
+}
