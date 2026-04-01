@@ -58,12 +58,35 @@ bun run check               # ast-grep + drift + typecheck
 
 ## References
 
-For exploring upstream library source code, clone repos into `references/` (gitignored). Example:
+When docs are insufficient or potentially stale, clone upstream repos into `references/` so agents can read actual source code.
+
+The `references/` directory is:
+- Gitignored (`.gitignore`) — never committed
+- Excluded from Biome (`biome.jsonc`) — not linted or formatted
+- Local-only — each developer/agent clones what they need
+
+### Usage
 
 ```bash
+# Clone a specific repo (shallow clone to save space)
 git clone --depth 1 https://github.com/Effect-TS/effect.git references/effect
+
+# Clone another dependency you need to understand
+git clone --depth 1 https://github.com/open-telemetry/opentelemetry-js.git references/opentelemetry-js
 ```
 
-This lets agents read actual implementations rather than relying on potentially stale documentation.
+Then read the source directly:
+
+```bash
+# Find how Effect implements a specific function
+grep -r "export const succeed" references/effect/packages/effect/src/
+```
+
+### When to use references/
+
+- Debugging behavior that docs don't explain
+- Understanding the exact API surface or type signatures of a dependency
+- Verifying whether a pattern is supported before adopting it
+- Reading test files to understand expected behavior
 
 @FP_AGENTS.md

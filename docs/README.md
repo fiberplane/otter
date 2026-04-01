@@ -64,3 +64,7 @@ App READMEs do NOT contain:
 ### architecture/
 
 Architecture notes are added as apps and packages are built. This directory starts empty.
+
+## references/
+
+Not part of `docs/` but related: the `references/` directory at the repo root holds shallow clones of upstream libraries (Effect, OpenTelemetry, etc.) for agents to read source code directly. It is gitignored and biome-ignored. See the References section of `AGENTS.md` for usage.
