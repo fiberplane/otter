@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "fp-implement": {
+      "source": "fiberplane/claude-code-plugins",
+      "sourceType": "github",
+      "computedHash": "d7bb028f8364035b64ba88c55582ee920d9d4f1860c3781e3088f6b9b5297137"
+    },
+    "fp-plan": {
+      "source": "fiberplane/claude-code-plugins",
+      "sourceType": "github",
+      "computedHash": "c7a825c94d44498dc103f90961298c050ea8050d54c76952e9d46b2481a51352"
+    },
+    "fp-review": {
+      "source": "fiberplane/claude-code-plugins",
+      "sourceType": "github",
+      "computedHash": "b340d8cb39ceb38d59ac979677d5d4b47dfaa92bf151749ff597d413e8f4cf49"
+    }
+  }
+}

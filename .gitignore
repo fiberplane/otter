@@ -1,0 +1,8 @@
+# Fiberplane local issue tracking
+.fp/*
+!.fp/config.toml
+!.fp/extensions/
+.fp/extensions/*
+!.fp/extensions/EXTENSIONS.md
+!.fp/extensions/*.ts
+.fp/config.local.toml
