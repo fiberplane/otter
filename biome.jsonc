@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!.claude/**", "!.agents/**", "!.codex/**", "!.fp/**", "!.pi/**"]
+    "includes": ["**", "!.claude/**", "!.agents/**", "!.codex/**", "!.fp/**", "!.pi/**", "!references/**"]
   },
   "formatter": {
     "enabled": true,
