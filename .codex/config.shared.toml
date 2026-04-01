@@ -1,0 +1,8 @@
+# Repo-tracked Codex sandbox settings.
+# Keep cross-machine-safe defaults here; place user-only overrides in config.local.toml.
+#
+# fp stores project data in ~/.fiberplane. For Codex sandbox sessions,
+# add ~/.fiberplane to writable_roots in config.local.toml (see config.local.example.toml).
+
+[shell_environment_policy]
+inherit = "all"

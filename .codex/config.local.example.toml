@@ -1,0 +1,11 @@
+# Copy to `.codex/config.local.toml` and replace with your actual absolute path.
+# Keep this file tracked; keep `.codex/config.local.toml` gitignored.
+
+[sandbox_workspace_write]
+writable_roots = ["/Users/yourname/.fiberplane"]
+
+[shell_environment_policy]
+# Inherit full environment as baseline.
+inherit = "all"
+# Load user shell profile so PATH includes tools from dotfiles.
+experimental_use_profile = true

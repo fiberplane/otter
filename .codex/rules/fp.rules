@@ -1,0 +1,25 @@
+# Allow fp CLI commands in the Codex sandbox
+prefix_rule(pattern=["fp"], decision="allow", justification="fp CLI for issue tracking and project management")
+prefix_rule(pattern=["fp", "issue", "create"], decision="allow", justification="allow extension-triggered background issue creation")
+prefix_rule(pattern=["fp", "comment"], decision="allow", justification="allow extension-triggered background status/review comments")
+prefix_rule(pattern=["fp", "issue", "diff"], decision="allow", justification="allow extension-triggered diff reads before review")
+prefix_rule(pattern=["fp", "comment", "list"], decision="allow", justification="allow extension-triggered comment context reads")
+
+# Allow drift CLI for spec-to-code binding
+prefix_rule(pattern=["drift"], decision="allow", justification="drift CLI for spec staleness checking and linking")
+
+# Allow ast-grep for linting
+prefix_rule(pattern=["sg"], decision="allow", justification="ast-grep CLI for custom TypeScript lint rules")
+
+# Allow common git read commands
+prefix_rule(pattern=["git", "status"], decision="allow")
+prefix_rule(pattern=["git", "diff"], decision="allow")
+prefix_rule(pattern=["git", "log"], decision="allow")
+prefix_rule(pattern=["git", "rev-parse"], decision="allow")
+prefix_rule(pattern=["git", "show"], decision="allow")
+prefix_rule(pattern=["git", "branch"], decision="allow")
+
+# Allow bun commands
+prefix_rule(pattern=["bun", "run"], decision="allow")
+prefix_rule(pattern=["bun", "install"], decision="allow")
+prefix_rule(pattern=["bun", "test"], decision="allow")
