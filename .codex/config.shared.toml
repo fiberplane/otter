@@ -1,8 +1,10 @@
-# Repo-tracked Codex sandbox settings.
+# Repo-tracked Codex sandbox settings used in normal sessions and automation worktrees.
 # Keep cross-machine-safe defaults here; place user-only overrides in config.local.toml.
 #
-# fp stores project data in ~/.fiberplane. For Codex sandbox sessions,
-# add ~/.fiberplane to writable_roots in config.local.toml (see config.local.example.toml).
+# Important: Codex Desktop automation runs derive workspace-write roots from the
+# automation's `cwds` list. Keep `~/.fiberplane` in automation `cwds` as well.
+# For non-automation sessions, set sandbox_workspace_write.writable_roots in
+# .codex/config.local.toml using an absolute path (see config.local.example.toml).
 
 [shell_environment_policy]
 inherit = "all"
