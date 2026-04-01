@@ -14,10 +14,8 @@ rule:
     - pattern: Bun.$_
 
 files:
-  - "apps/**/*.ts"
-  - "apps/**/*.tsx"
-  - "packages/**/*.ts"
-  - "packages/**/*.tsx"
+  - "packages/**/src/**/*.ts"
+  - "packages/**/src/**/*.tsx"
 
 note: |
   Core packages should be runtime-agnostic when shared across multiple runtimes.

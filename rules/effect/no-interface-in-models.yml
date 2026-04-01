@@ -9,10 +9,10 @@ rule:
   pattern: export interface $NAME { $$$BODY }
 
 files:
-  - "apps/**/*.ts"
-  - "apps/**/*.tsx"
-  - "packages/**/*.ts"
-  - "packages/**/*.tsx"
+  - "**/models/**/*.ts"
+  - "**/models/**/*.tsx"
+  - "**/domain/**/*.ts"
+  - "**/domain/**/*.tsx"
 
 note: |
   Domain models must use Effect Schema as the single source of truth.

@@ -12,7 +12,7 @@ rule:
 
 note: |
   Use `for...of` loops instead of `forEach` for better performance.
-  See AGENTS.md Development Patterns section 2.
+  See docs/patterns/coding-style.md.
 
   Example:
   ```typescript
@@ -29,6 +29,4 @@ ignores:
   - "**/*.test.ts"
   - "**/*.spec.ts"
   - "**/node_modules/**"
-  - "**/opensrc/**"
-  - "**/scripts/**"
 

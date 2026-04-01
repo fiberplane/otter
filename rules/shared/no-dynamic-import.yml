@@ -34,5 +34,3 @@ ignores:
   - "**/*.spec.tsx"
   - "**/*.d.ts"
   - "**/node_modules/**"
-  - "**/opensrc/**"
-  - "**/scripts/**"
