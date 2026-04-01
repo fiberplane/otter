@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "drift": {
+      "source": "fiberplane/drift",
+      "sourceType": "github",
+      "computedHash": "ff1a3df511255fa2444deb27e913054a06491345f248a708ca5e379d81b0a255"
+    },
     "fp-implement": {
       "source": "fiberplane/claude-code-plugins",
       "sourceType": "github",
