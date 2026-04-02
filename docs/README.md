@@ -57,6 +57,7 @@ App READMEs do NOT contain:
 | [effect.md](patterns/effect.md)               | Effect conventions, service architecture, code smells      |
 | [boundaries.md](patterns/boundaries.md)       | Boundary convention: adapters, entry points, interior code |
 | [coding-style.md](patterns/coding-style.md)   | TypeScript coding style, early returns, type safety        |
+| [data-validation.md](patterns/data-validation.md) | Schema-first validation at boundaries, anti-patterns       |
 | [observability.md](patterns/observability.md) | Effect + OpenTelemetry tracing and logging setup           |
 
 ### templates/
