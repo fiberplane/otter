@@ -5,7 +5,7 @@ valid:
     if (status === "connected") {
       return true;
     }
-    
+
     return false;
   - |
     if (spanStatus === undefined) {
@@ -15,7 +15,7 @@ valid:
     if (spanStatus === "error") {
       return ErrorStatusComponent;
     }
-    
+
     if (spanStatus === "ok") {
       return OkStatusComponent;
     }

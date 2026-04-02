@@ -33,7 +33,7 @@ note: |
   if (status === "connected") {
     return true;
   }
-  
+
   return false;
   ```
 

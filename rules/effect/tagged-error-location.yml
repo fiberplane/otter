@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: tagged-error-location
+language: tsx
+severity: error
+message: "Define TaggedError classes in errors.ts, not here"
+
+rule:
+  pattern: Data.TaggedError($$$ARGS)
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  All tagged error definitions must live in errors.ts for discoverability.
+  Import and use them from there — don't define them inline.
+
+  Example:
+  ```typescript
+  // ❌ Bad: TaggedError in commands/hello.ts
+  class HelloError extends Data.TaggedError("HelloError")<{
+    readonly reason: string;
+  }> {}
+
+  // ✅ Good: defined in errors.ts, imported where needed
+  import { HelloError } from "../errors";
+  ```
+
+ignores:
+  - "**/errors.ts"
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

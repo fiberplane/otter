@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-hardcoded-colors
+language: tsx
+severity: error
+message: "Use semantic color tokens instead of hardcoded Tailwind colors"
+
+rule:
+  kind: string_fragment
+  regex: "(text|bg|border)-(white|black|gray|neutral|zinc|slate|stone|red|green|blue|yellow|orange|amber|indigo|violet|purple|pink|emerald|teal|cyan|sky|lime|rose|fuchsia)(-\\d+)?(/\\d+)?"
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Use semantic color tokens from your design system instead of raw Tailwind colors.
+  This ensures consistency and theme support.
+
+  Example:
+  ```tsx
+  // ❌ Bad
+  <div className="text-white bg-red-500 border-gray-200" />
+
+  // ✅ Good
+  <div className="text-foreground bg-destructive border-border" />
+  ```
+
+  Define semantic tokens in your CSS/Tailwind config and use those instead.
+  Opacity modifiers on semantic tokens are fine: text-foreground/80, bg-primary/20.
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

@@ -6,7 +6,14 @@ severity: error
 message: "Use tagged/domain errors instead of bare new Error(...)"
 
 rule:
-  pattern: new Error($$$ARGS)
+  any:
+    - pattern: new Error($$$ARGS)
+    - pattern: new TypeError($$$ARGS)
+    - pattern: new RangeError($$$ARGS)
+    - pattern: new ReferenceError($$$ARGS)
+    - pattern: new SyntaxError($$$ARGS)
+    - pattern: new URIError($$$ARGS)
+    - pattern: new EvalError($$$ARGS)
 
 files:
   - "apps/**/*.ts"
@@ -15,17 +22,21 @@ files:
   - "packages/**/*.tsx"
 
 note: |
-  Avoid constructing generic Error instances in Effect code.
-  Prefer Data.TaggedError classes with structured fields so failures are typed,
-  matchable via Effect.catchTag, and properly filtered from Sentry reporting.
+  Don't construct built-in Error types in Effect code. Errors are either:
+  - **Tagged** (known/handled): Data.TaggedError with typed fields, catchable via Effect.catchTag
+  - **Unknown** (unexpected): let them propagate as UnknownException
 
   Example:
   ```typescript
   // ❌ Bad
   Effect.fail(new Error("No VCS detected"));
+  throw new TypeError("Expected string");
 
-  // ✅ Good
+  // ✅ Good — tagged error for known failure
   Effect.fail(new NoVcsDetectedError());
+
+  // ✅ Good — unknown failures propagate naturally
+  Effect.try(() => riskyOperation());
   ```
 
 ignores:

@@ -2,91 +2,77 @@
 
 Effect.ts monorepo template with agent-friendly tooling for code quality, documentation, and work tracking.
 
+## Philosophy
+
+**Explicit control flow.** Every branch handled, every error typed. `TaggedError` gives errors identity, `catchTag` forces handling by name. No silent catches, no untyped throws, no bare `new Error`.
+
+**Code shape enforcement.** ast-grep rules enforce architecture, not just style. Errors live in `errors.ts`. External SDK wrappers live in adapter files. `runPromise` only appears at entry points. The rules define the shape of the codebase — read them to understand the architecture.
+
+**Runtime observability.** Structured logging with span context, traces at every boundary. Run with `EFFECT_TRACE=1` to see the full call tree on stdout. The first two pillars enforce the preconditions that make this work.
+
+## Conventions
+
+- `apps/` — Deployable applications (CLIs, APIs, workers)
+- `packages/` — Internal shared packages consumed by apps
+- Each app and package has its own `package.json` and `tsconfig.json` extending the root
+- **Boundary convention**: Adapter files (`*.adapter.ts` or `adapters/`) wrap external SDKs and services that don't have Effect abstractions. Effect platform services (`FileSystem`, `HttpClient`, etc.) are already traced and injectable — use them freely in interior code. See `docs/patterns/boundaries.md`.
+- **App templates**: To build new apps (CLI, API, worker), see `docs/templates/`.
+
 ## Prerequisites
 
 The following tools must be installed on the host machine:
 
-| Tool | Purpose | Install |
-|------|---------|---------|
-| **bun** | Package manager and runtime | [bun.sh](https://bun.sh) |
-| **fp** | Issue tracking and work sessions | [fp.dev](https://fp.dev) |
-| **drift** | Spec-to-code binding and staleness detection | [github.com/fiberplane/drift](https://github.com/fiberplane/drift) |
-| **ast-grep** (`sg`) | Custom lint rules | [ast-grep.github.io](https://ast-grep.github.io) |
-
-## Monorepo Conventions
-
-- `apps/` — Published or deployable applications (CLIs, APIs, workers)
-- `packages/` — Internal shared packages consumed by apps
-
-Each app and package has its own `package.json` and `tsconfig.json` extending the root.
+| Tool                | Purpose                                      | Install                                                            |
+| ------------------- | -------------------------------------------- | ------------------------------------------------------------------ |
+| **bun**             | Package manager and runtime                  | [bun.sh](https://bun.sh)                                           |
+| **fp**              | Issue tracking and work sessions             | [fp.dev](https://fp.dev)                                           |
+| **drift**           | Spec-to-code binding and staleness detection | [github.com/fiberplane/drift](https://github.com/fiberplane/drift) |
+| **ast-grep** (`sg`) | Custom lint rules                            | [ast-grep.github.io](https://ast-grep.github.io)                   |
 
 ## Commands
 
 ```bash
-bun install                 # Install all deps
-bun run lint                # Biome lint (all workspaces)
-bun run lint:ast            # ast-grep scan (custom TS rules)
-bun run lint:drift          # drift lint (check for stale specs)
-bun run format              # Biome format (all workspaces)
-bun run typecheck           # Typecheck (all workspaces)
-bun run test                # Tests (all workspaces)
-bun run check               # ast-grep + drift + typecheck
+bun install                       # Install all deps
+bun run lint                      # oxlint
+bun run lint:ast                  # ast-grep scan (custom rules)
+bun run lint:drift                # drift lint (stale spec check)
+bun run format                    # oxfmt
+bun run typecheck                 # tsgo --noEmit
+bun run check                     # all of the above
+bun run test                      # Tests (all workspaces)
+EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 ```
 
 ## Where to Look
 
-| Topic | Location |
-|-------|----------|
-| Effect conventions | `docs/patterns/effect.md` |
-| Coding style | `docs/patterns/coding-style.md` |
-| Observability setup | `docs/patterns/observability.md` |
-| How to build a CLI | `docs/templates/cli.md` |
-| Architecture notes | `docs/architecture/` |
-| Docs convention guide | `docs/README.md` |
-| ast-grep rules | `rules/shared/`, `rules/effect/` |
-| ast-grep rule tests | `rule-tests/shared/`, `rule-tests/effect/` |
+| Topic                            | Location                                   |
+| -------------------------------- | ------------------------------------------ |
+| Effect conventions               | `docs/patterns/effect.md`                  |
+| Boundary conventions             | `docs/patterns/boundaries.md`              |
+| Coding style                     | `docs/patterns/coding-style.md`            |
+| Observability setup              | `docs/patterns/observability.md`           |
+| App templates (CLI, API, worker) | `docs/templates/`                          |
+| Architecture notes               | `docs/architecture/`                       |
+| Docs convention guide            | `docs/README.md`                           |
+| ast-grep rules                   | `rules/shared/`, `rules/effect/`           |
+| ast-grep rule tests              | `rule-tests/shared/`, `rule-tests/effect/` |
 
 ## Enforcement
 
-**Biome** (`bun run lint`): `noExplicitAny` (error), `useBlockStatements` (error), `noAccumulatingSpread` (error), auto import organization. `noConsole` is off — handled by ast-grep for Effect code. Formatter: 2-space indent, 100-char lines, double quotes.
+- **oxlint** — Config in `.oxlintrc.json`. Handles standard TypeScript lint rules.
+- **oxfmt** — Config in `.oxfmtrc.json`. 2-space indent, 100-char lines, double quotes, import sorting.
+- **tsgo** — TypeScript native compiler (preview). Uses root `tsconfig.json`.
+- **ast-grep** — Custom rules in `rules/`. These enforce the architectural patterns described above — see `docs/patterns/effect.md` for the full rule table.
+- **drift** — Binds specs in `docs/` to source files. `drift lint` flags stale specs, `drift link <spec>` re-stamps.
 
-**ast-grep** (`bun run lint:ast`): Custom rules in `rules/`. Shared rules apply to all TypeScript; Effect rules apply to `apps/**` and `packages/**`. See `docs/patterns/effect.md` for the full rule table and code smell guide.
-
-**drift** (`bun run lint:drift`): Specs in `docs/` can be bound to source files via anchors. When code changes, `drift lint` flags stale specs. Update the spec, then run `drift link <spec>` to re-stamp. See the drift skill for detailed workflow.
-
-**After writing any code**, run `bun run check` to verify ast-grep rules, drift anchors, and types all pass.
+**After writing any code**, run `bun run check`.
 
 ## References
 
-When docs are insufficient or potentially stale, clone upstream repos into `references/` so agents can read actual source code.
-
-The `references/` directory is:
-- Gitignored (`.gitignore`) — never committed
-- Excluded from Biome (`biome.jsonc`) — not linted or formatted
-- Local-only — each developer/agent clones what they need
-
-### Usage
+Clone upstream repos into `references/` when docs are insufficient. This directory is gitignored and excluded from linting.
 
 ```bash
-# Clone a specific repo (shallow clone to save space)
 git clone --depth 1 https://github.com/Effect-TS/effect.git references/effect
-
-# Clone another dependency you need to understand
-git clone --depth 1 https://github.com/open-telemetry/opentelemetry-js.git references/opentelemetry-js
 ```
-
-Then read the source directly:
-
-```bash
-# Find how Effect implements a specific function
-grep -r "export const succeed" references/effect/packages/effect/src/
-```
-
-### When to use references/
-
-- Debugging behavior that docs don't explain
-- Understanding the exact API surface or type signatures of a dependency
-- Verifying whether a pattern is supported before adopting it
-- Reading test files to understand expected behavior
 
 @FP_AGENTS.md

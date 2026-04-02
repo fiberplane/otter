@@ -1,5 +1,7 @@
 # How to Build an Effect CLI
 
+This is a reference template for CLI tools. For conventions that apply to all app types, see the patterns docs (`docs/patterns/`). This template shows CLI-specific wiring.
+
 A template for building CLI tools with Effect + Bun + yargs. This describes the project structure, service patterns, and entry point setup that an agent should follow when creating a new CLI app.
 
 ## Project Structure
@@ -34,9 +36,9 @@ apps/<name>/
   "scripts": {
     "dev": "bun run src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
-    "lint": "biome check src/",
-    "format": "biome format --write src/",
-    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src/",
+    "format": "oxfmt --write src/",
+    "typecheck": "tsgo --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -145,13 +147,10 @@ export const AppConfigLive = Layer.effect(
 );
 
 // Compose all layers for the app
-export const AppContext = Layer.mergeAll(
-  AppConfigLive,
-  BunContext.layer,
-);
+export const AppContext = Layer.mergeAll(AppConfigLive, BunContext.layer);
 ```
 
-## Commands (commands/*.ts)
+## Commands (commands/\*.ts)
 
 Each command returns an Effect. Commands capture yargs args but don't execute — the entry point runs them:
 
@@ -160,15 +159,11 @@ import { Effect } from "effect";
 import { AppConfig } from "../services";
 import type { CommandError } from "../errors";
 
-export const hello = (args: {
-  name: string;
-}): Effect.Effect<void, CommandError, AppConfig> =>
+export const hello = (args: { name: string }): Effect.Effect<void, CommandError, AppConfig> =>
   Effect.gen(function* () {
     const config = yield* AppConfig;
     yield* Effect.log(`Hello, ${args.name}!`, { configDir: config.configDir });
-  }).pipe(
-    Effect.withSpan("hello", { attributes: { name: args.name } })
-  );
+  }).pipe(Effect.withSpan("hello", { attributes: { name: args.name } }));
 ```
 
 ## Entry Point (index.ts)
@@ -202,9 +197,7 @@ const parseArgs = (): Effect.Effect<CommandEffect> =>
           }),
         (argv) => {
           // Capture the Effect with layers provided — don't execute yet
-          selectedCommand = hello({ name: argv.name! }).pipe(
-            Effect.provide(AppContext),
-          );
+          selectedCommand = hello({ name: argv.name! }).pipe(Effect.provide(AppContext));
         },
       )
       .demandCommand(1, "Please specify a command")
@@ -221,11 +214,7 @@ const parseArgs = (): Effect.Effect<CommandEffect> =>
 
     if (parseResult instanceof Promise) {
       parseResult.then(finalize).catch((error) => {
-        resume(
-          Effect.fail(
-            error instanceof Error ? error : new Error(String(error)),
-          ),
-        );
+        resume(Effect.fail(error instanceof Error ? error : new Error(String(error))));
       });
     } else {
       finalize();
@@ -252,9 +241,18 @@ BunRuntime.runMain(main);
 To add tracing to your CLI, see `docs/patterns/observability.md`. The key steps:
 
 1. Add `@effect/opentelemetry` and `@opentelemetry/sdk-trace-base` dependencies
-2. Create a `TracingLive` layer with `NodeSdk.layer`
+2. Create an env-var-gated `TracingLive` layer:
+   ```typescript
+   const TracingLive = process.env["EFFECT_TRACE"]
+     ? NodeSdk.layer(() => ({
+         resource: { serviceName: "my-cli" },
+         spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
+       }))
+     : Layer.empty;
+   ```
 3. Add `TracingLive` to your `AppContext` layer composition
 4. Use `Effect.withSpan` in your commands
+5. Run with `EFFECT_TRACE=1 bun run dev` to see traces
 
 ## Checklist
 
@@ -266,6 +264,7 @@ When building a new CLI app:
 - [ ] Create layers in `layers.ts` with proper dependency composition
 - [ ] One file per command in `commands/`
 - [ ] Wire yargs in `index.ts` using the async-resume pattern
-- [ ] Add `Effect.withSpan` to commands for observability
+- [ ] Boundary convention: I/O in `*.adapter.ts` files, pure Effect everywhere else (see `docs/patterns/boundaries.md`)
+- [ ] Add `Effect.withSpan` to commands and adapter exports for observability
 - [ ] Run `ast-grep scan` to catch Effect anti-patterns
 - [ ] Run `bun run typecheck` from root

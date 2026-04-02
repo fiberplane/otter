@@ -5,22 +5,22 @@ snapshots:
       handleItem(item);
     });
   : labels:
-    - source: |-
-        data.forEach(function(item) {
-          handleItem(item);
-        })
-      style: primary
-      start: 0
-      end: 52
+      - source: |-
+          data.forEach(function(item) {
+            handleItem(item);
+          })
+        style: primary
+        start: 0
+        end: 52
   items.forEach(item => process(item)):
     labels:
-    - source: items.forEach(item => process(item))
-      style: primary
-      start: 0
-      end: 36
+      - source: items.forEach(item => process(item))
+        style: primary
+        start: 0
+        end: 36
   users.forEach((user) => { console.log(user); }):
     labels:
-    - source: users.forEach((user) => { console.log(user); })
-      style: primary
-      start: 0
-      end: 47
+      - source: users.forEach((user) => { console.log(user); })
+        style: primary
+        start: 0
+        end: 47

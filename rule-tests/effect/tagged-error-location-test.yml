@@ -1,0 +1,23 @@
+id: tagged-error-location
+
+valid:
+  - |
+    import { HelloError } from "../errors";
+    Effect.fail(new HelloError({ reason: "test" }));
+  - |
+    const result = Effect.catchTag("HelloError", (e) => Effect.succeed(fallback));
+
+invalid:
+  - |
+    class HelloError extends Data.TaggedError("HelloError")<{
+      readonly reason: string;
+    }> {}
+  - |
+    export class FetchError extends Data.TaggedError("FetchError")<{
+      readonly url: string;
+      readonly status: number;
+    }> {
+      get message() {
+        return `Fetch failed: ${this.url}`;
+      }
+    }

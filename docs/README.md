@@ -6,12 +6,12 @@ System of record for the repository. AGENTS.md is the map, this directory is the
 
 ### What goes where
 
-| Location | Contains | Examples |
-|---|---|---|
-| `AGENTS.md` | Map: apps, commands, pointers into docs/ | "For Effect patterns, see docs/patterns/effect.md" |
-| `docs/patterns/` | How we write code in this repo. Conventions, rules, idioms. | Effect usage, coding style, observability setup |
-| `docs/templates/` | How to build things. Specs for software components. | Effect CLI setup, API service scaffold |
-| `docs/architecture/` | What the system looks like. Domain boundaries, data flow, key decisions. | Service architecture, data models |
+| Location             | Contains                                                                 | Examples                                           |
+| -------------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
+| `AGENTS.md`          | Map: apps, commands, pointers into docs/                                 | "For Effect patterns, see docs/patterns/effect.md" |
+| `docs/patterns/`     | How we write code in this repo. Conventions, rules, idioms.              | Effect usage, coding style, observability setup    |
+| `docs/templates/`    | How to build things. Specs for software components.                      | Effect CLI setup, API service scaffold             |
+| `docs/architecture/` | What the system looks like. Domain boundaries, data flow, key decisions. | Service architecture, data models                  |
 
 ### docs/ vs skills
 
@@ -20,6 +20,7 @@ System of record for the repository. AGENTS.md is the map, this directory is the
 **skills** = how to do things. Operational knowledge that helps an agent perform tasks.
 
 Skills live in two places:
+
 - `.claude/skills/` — repo-specific skills, versioned with the code. Techniques that reference this codebase's tools, scripts, or conventions.
 - `~/.claude/skills/` — personal skills, portable across repos. General techniques not tied to any codebase.
 
@@ -28,12 +29,14 @@ Overlap rule: if a pattern describes our codebase (our Effect conventions, our a
 ### docs/ vs app READMEs
 
 App READMEs answer "how do I get this running." They contain:
+
 - Prerequisites and install steps
 - Dev/build/test commands
 - Environment setup
 - Links to relevant docs/ for patterns and architecture
 
 App READMEs do NOT contain:
+
 - Coding patterns or conventions (-> docs/patterns/)
 - Architecture deep-dives (-> docs/architecture/)
 
@@ -49,17 +52,20 @@ App READMEs do NOT contain:
 
 ### patterns/
 
-| Doc | Topic |
-|-----|-------|
-| [effect.md](patterns/effect.md) | Effect conventions, service architecture, code smells |
-| [coding-style.md](patterns/coding-style.md) | TypeScript coding style, early returns, type safety |
-| [observability.md](patterns/observability.md) | Effect + OpenTelemetry tracing and logging setup |
+| Doc                                           | Topic                                                      |
+| --------------------------------------------- | ---------------------------------------------------------- |
+| [effect.md](patterns/effect.md)               | Effect conventions, service architecture, code smells      |
+| [boundaries.md](patterns/boundaries.md)       | Boundary convention: adapters, entry points, interior code |
+| [coding-style.md](patterns/coding-style.md)   | TypeScript coding style, early returns, type safety        |
+| [observability.md](patterns/observability.md) | Effect + OpenTelemetry tracing and logging setup           |
 
 ### templates/
 
-| Doc | Topic |
-|-----|-------|
-| [cli.md](templates/cli.md) | How to build an Effect CLI with Bun + yargs |
+| Doc                              | Topic                                       |
+| -------------------------------- | ------------------------------------------- |
+| [cli.md](templates/cli.md)       | How to build an Effect CLI with Bun + yargs |
+| [api.md](templates/api.md)       | How to build an Effect HTTP API             |
+| [worker.md](templates/worker.md) | How to build an Effect background worker    |
 
 ### architecture/
 
@@ -67,4 +73,4 @@ Architecture notes are added as apps and packages are built. This directory star
 
 ## references/
 
-Not part of `docs/` but related: the `references/` directory at the repo root holds shallow clones of upstream libraries (Effect, OpenTelemetry, etc.) for agents to read source code directly. It is gitignored and biome-ignored. See the References section of `AGENTS.md` for usage.
+Not part of `docs/` but related: the `references/` directory at the repo root holds shallow clones of upstream libraries (Effect, OpenTelemetry, etc.) for agents to read source code directly. It is gitignored and excluded from linting/formatting. See the References section of `AGENTS.md` for usage.

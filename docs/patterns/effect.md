@@ -78,46 +78,36 @@ const listItemsCommand = Effect.gen(function* () {
 });
 ```
 
-## Bridging with Non-Effect Libraries
+## Bridging Non-Effect Code
 
-### Yargs Integration
+When integrating with libraries that don't use Effect, wrap them at the boundary using `Effect.async` (callback-based) or `Effect.tryPromise` (promise-based).
 
-Yargs is callback-based. We use `Effect.async` with closure-scoped state:
+### Callback-Based APIs
+
+Use `Effect.async` to capture a callback result as an Effect:
 
 ```typescript
-const parseArgs = (): Effect.Effect<CommandEffect, Error, FileSystem> => {
-  return Effect.async<CommandEffect, Error, FileSystem>((resume) => {
-    let selectedCommand: CommandEffect | null = null;
-
-    const yargsInstance = yargs(hideBin(process.argv))
-      .command(
-        "item create",
-        "Create a new item",
-        (yargs) => yargs.option("title", { type: "string", demandOption: true }),
-        (argv) => {
-          // Handler captures the Effect, doesn't execute it
-          selectedCommand = itemCreate(argv);
-        },
-      );
-
-    const parseResult = yargsInstance.parse();
-
-    const finalize = (): void => {
-      if (selectedCommand !== null) {
-        resume(Effect.succeed(selectedCommand));
-      }
-    };
-
-    if (parseResult instanceof Promise) {
-      parseResult.then(finalize).catch((error) => {
-        resume(Effect.fail(error instanceof Error ? error : new Error(String(error))));
-      });
-    } else {
-      finalize();
-    }
+const fromCallback = <A>(register: (cb: (result: A) => void) => void): Effect.Effect<A> =>
+  Effect.async<A>((resume) => {
+    register((result) => {
+      resume(Effect.succeed(result));
+    });
   });
-};
 ```
+
+### Promise-Based APIs
+
+Use `Effect.tryPromise` to wrap a promise and map its error:
+
+```typescript
+const fetchData = (url: string) =>
+  Effect.tryPromise({
+    try: () => fetch(url).then((r) => r.json()),
+    catch: (error) => new FetchError({ url, cause: error }),
+  });
+```
+
+These wrappers belong in boundary files (`*.adapter.ts` or `adapters/`). See `docs/patterns/boundaries.md` for the full convention on what goes where.
 
 ### Effect.all with Concurrency
 
@@ -125,14 +115,12 @@ Run independent operations in parallel:
 
 ```typescript
 // Bad: Sequential (second waits for first)
-const comments = yield* getComments(itemId);
-const details = yield* getDetails(itemId);
+const comments = yield * getComments(itemId);
+const details = yield * getDetails(itemId);
 
 // Good: Parallel execution
-const [comments, details] = yield* Effect.all(
-  [getComments(itemId), getDetails(itemId)],
-  { concurrency: "unbounded" },
-);
+const [comments, details] =
+  yield * Effect.all([getComments(itemId), getDetails(itemId)], { concurrency: "unbounded" });
 ```
 
 ### Effect.forkDaemon for Background Tasks
@@ -141,7 +129,7 @@ Fire-and-forget operations that should not block the current handler:
 
 ```typescript
 // Prefetch in background -- don't block the current handler
-yield* prefetchData(nextItemId).pipe(Effect.forkDaemon);
+yield * prefetchData(nextItemId).pipe(Effect.forkDaemon);
 ```
 
 ### Fallback with Logging
@@ -179,14 +167,14 @@ async function getItem(id: string) {
 const getItem = (id: string): Effect.Effect<Item, ItemNotFoundError | ParseError, FileSystem> =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
-    const content = yield* fs.readFileString(path).pipe(
-      Effect.mapError(() => new ItemNotFoundError({ itemId: id }))
-    );
+    const content = yield* fs
+      .readFileString(path)
+      .pipe(Effect.mapError(() => new ItemNotFoundError({ itemId: id })));
     return yield* parseItem(content);
   });
 ```
 
-### 2. Manual _tag Checking
+### 2. Manual \_tag Checking
 
 Never inspect `_tag` directly -- not with `===`, not with `in`, not with `Reflect.get`.
 Effect provides purpose-built APIs for every case:
@@ -299,9 +287,7 @@ const validateInput = (input: string): Effect.Effect<string> =>
 const validateInput = (input: string): Effect.Effect<string, ValidationError> =>
   Effect.gen(function* () {
     if (input.length === 0) {
-      return yield* Effect.fail(
-        new ValidationError({ field: "input", reason: "cannot be empty" })
-      );
+      return yield* Effect.fail(new ValidationError({ field: "input", reason: "cannot be empty" }));
     }
     return input;
   });
@@ -362,6 +348,7 @@ const parseItem = Schema.decodeUnknown(Item);
 ```
 
 Benefits of Schema-first approach:
+
 - **Single source of truth**: Type and validation logic are never out of sync
 - **Runtime validation**: Schema validates at runtime, not just compile time
 - **Composable**: Schemas can be combined, extended, and transformed
@@ -379,9 +366,9 @@ console.error("Failed to fetch:", error);
 console.warn("Deprecated feature");
 
 // Good: Effect logging utilities
-yield* Effect.log("Processing data:", data);
-yield* Effect.logError("Failed to fetch:", error);
-yield* Effect.logWarning("Deprecated feature");
+yield * Effect.log("Processing data:", data);
+yield * Effect.logError("Failed to fetch:", error);
+yield * Effect.logWarning("Deprecated feature");
 ```
 
 Effect logging integrates with the runtime -- it can be configured, filtered, and tested. Console methods bypass all of that.
@@ -448,28 +435,24 @@ plain object won't work with `Either.isLeft`/`Either.isRight`.
 
 ```typescript
 // Bad: Error silently disappears -- impossible to debug
-Effect.catchAll(() => Effect.succeed([]))
+Effect.catchAll(() => Effect.succeed([]));
 
 // Good: Log before recovering
 Effect.catchAll((err) =>
-  Effect.logWarning("Falling back due to error", err).pipe(
-    Effect.map(() => []),
-  ),
-)
+  Effect.logWarning("Falling back due to error", err).pipe(Effect.map(() => [])),
+);
 
 // Good: Use tapError before catchAll
 pipe(
   someEffect,
   Effect.tapError((err) => Effect.logWarning("Recovering from", err)),
   Effect.catchAll(() => Effect.succeed([])),
-)
+);
 
 // Good: Catch specific errors instead of all
 Effect.catchTag("NetworkError", (err) =>
-  Effect.logWarning("Network unavailable, using cache").pipe(
-    Effect.map(() => cachedValue),
-  ),
-)
+  Effect.logWarning("Network unavailable, using cache").pipe(Effect.map(() => cachedValue)),
+);
 ```
 
 Silent `catchAll` hides failures and makes debugging impossible. Always log the error before recovering, or catch specific error tags instead.
@@ -478,53 +461,53 @@ Silent `catchAll` hides failures and makes debugging impossible. Always log the 
 
 ### Effect rules (`rules/effect/`) -- apply to `apps/**` and `packages/**`:
 
-| Rule | Severity | What it catches |
-|------|----------|-----------------|
-| `no-throw-in-effect` | error | `throw` inside `Effect.gen` -- use `Effect.fail` |
-| `no-try-catch` | error | `try-catch` in Effect code -- use `Effect.try` or `Effect.catchTag` |
-| `no-manual-tag-check` | warning | Manual `._tag` checking -- use `Effect.catchTag` or `Match` |
-| `no-direct-fs` | error | `import from "node:fs"` -- use Effect's `FileSystem` service |
-| `use-tagged-error` | error | `extends Error` -- use `Data.TaggedError` |
-| `no-bare-new-error` | error | `new Error(...)` -- use tagged/domain error types |
-| `no-console-log` | error | `console.log/warn/error/info` -- use `Effect.log`/`logWarning`/`logError` |
-| `no-runpromise-in-effect` | error | `Effect.runPromise`/`runSync` -- use `yield*` or `Runtime.runPromise` at boundaries |
-| `no-silent-catch` | error | `Effect.catchAll(() => Effect.succeed(...))` without logging -- no silent error swallowing |
-| `no-interface-in-models` | error | `export interface` in models -- use `Schema.Struct` for domain types |
+| Rule                      | Severity | What it catches                                                                                                                              |
+| ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-throw-in-effect`      | error    | `throw` inside `Effect.gen` -- use `Effect.fail`                                                                                             |
+| `no-try-catch`            | error    | `try-catch` in Effect code -- use `Effect.try` or `Effect.catchTag`                                                                          |
+| `no-manual-tag-check`     | warning  | Manual `._tag` checking -- use `Effect.catchTag` or `Match`                                                                                  |
+| `no-direct-fs`            | error    | `import from "node:fs"` -- use Effect's `FileSystem` service                                                                                 |
+| `use-tagged-error`        | error    | `extends Error` -- use `Data.TaggedError`                                                                                                    |
+| `no-bare-new-error`       | error    | `new Error(...)` -- use tagged/domain error types                                                                                            |
+| `no-console-log`          | error    | `console.log/warn/error/info` -- use `Effect.log`/`logWarning`/`logError`                                                                    |
+| `no-runpromise-in-effect` | error    | `Effect.runPromise`/`runSync` -- use `yield*` inside Effect; `Runtime.runPromise` at boundary files only (see `docs/patterns/boundaries.md`) |
+| `no-silent-catch`         | error    | `Effect.catchAll(() => Effect.succeed(...))` without logging -- no silent error swallowing                                                   |
+| `no-interface-in-models`  | error    | `export interface` in models -- use `Schema.Struct` for domain types                                                                         |
 
 **After writing any code**, run `ast-grep scan` from the repo root to check for these anti-patterns.
 
 ## Quick Reference
 
-| Pattern | Module | Purpose |
-|---------|--------|---------|
-| `Data.TaggedError` | `effect` | Custom error types with context |
-| `Data.taggedEnum` | `effect` | Discriminated unions (`$match`, `$is`) |
-| `Context.Tag` | `effect` | Service definition |
-| `Layer.effect` | `effect` | Creating service layers |
-| `Effect.gen` | `effect` | Composing effects |
-| `Effect.fail` | `effect` | Return typed error |
-| `Effect.try` | `effect` | Wrap sync code |
-| `Effect.tryPromise` | `effect` | Wrap promises |
-| `Effect.async` | `effect` | Custom async logic |
-| `Effect.all` | `effect` | Concurrent operations |
-| `Effect.catchTag` | `effect` | Handle specific error by tag |
-| `Effect.catchTags` | `effect` | Handle multiple error tags at once |
-| `Effect.catchIf` | `effect` | Handle errors matching a predicate |
-| `Effect.catchAll` | `effect` | Handle all remaining errors |
-| `Effect.catchAllCause` | `effect` | Handle all errors including defects |
-| `Effect.either` | `effect` | Lift errors into Either |
-| `Either.isLeft/isRight` | `effect` | Branch on Either values |
-| `Either.match` | `effect` | Handle both Either branches |
-| `Effect.mapError` | `effect` | Transform errors |
-| `Effect.match` | `effect` | Handle success + failure (pure) |
-| `Effect.matchEffect` | `effect` | Handle success + failure (effectful) |
-| `Schema.Struct` | `effect` | Type-safe validation |
-| `Option.fromNullable` | `effect` | Nullable to Option |
-| `Match.value` | `effect` | Pattern matching on values |
-| `Match.tag` | `effect` | Match tagged union variants |
-| `Runtime.runPromise` | `effect` | Execute in async contexts |
-| `ManagedRuntime.make` | `effect` | Shared configured runtime |
-| `Effect.all` (concurrency) | `effect` | Parallel execution control |
-| `Effect.forkDaemon` | `effect` | Background fire-and-forget |
-| `Effect.tap` / `tapError` | `effect` | Side effects in pipelines |
-| `Layer.merge` | `effect` | Override single service in layer stack |
+| Pattern                    | Module   | Purpose                                |
+| -------------------------- | -------- | -------------------------------------- |
+| `Data.TaggedError`         | `effect` | Custom error types with context        |
+| `Data.taggedEnum`          | `effect` | Discriminated unions (`$match`, `$is`) |
+| `Context.Tag`              | `effect` | Service definition                     |
+| `Layer.effect`             | `effect` | Creating service layers                |
+| `Effect.gen`               | `effect` | Composing effects                      |
+| `Effect.fail`              | `effect` | Return typed error                     |
+| `Effect.try`               | `effect` | Wrap sync code                         |
+| `Effect.tryPromise`        | `effect` | Wrap promises                          |
+| `Effect.async`             | `effect` | Custom async logic                     |
+| `Effect.all`               | `effect` | Concurrent operations                  |
+| `Effect.catchTag`          | `effect` | Handle specific error by tag           |
+| `Effect.catchTags`         | `effect` | Handle multiple error tags at once     |
+| `Effect.catchIf`           | `effect` | Handle errors matching a predicate     |
+| `Effect.catchAll`          | `effect` | Handle all remaining errors            |
+| `Effect.catchAllCause`     | `effect` | Handle all errors including defects    |
+| `Effect.either`            | `effect` | Lift errors into Either                |
+| `Either.isLeft/isRight`    | `effect` | Branch on Either values                |
+| `Either.match`             | `effect` | Handle both Either branches            |
+| `Effect.mapError`          | `effect` | Transform errors                       |
+| `Effect.match`             | `effect` | Handle success + failure (pure)        |
+| `Effect.matchEffect`       | `effect` | Handle success + failure (effectful)   |
+| `Schema.Struct`            | `effect` | Type-safe validation                   |
+| `Option.fromNullable`      | `effect` | Nullable to Option                     |
+| `Match.value`              | `effect` | Pattern matching on values             |
+| `Match.tag`                | `effect` | Match tagged union variants            |
+| `Runtime.runPromise`       | `effect` | Execute in async contexts              |
+| `ManagedRuntime.make`      | `effect` | Shared configured runtime              |
+| `Effect.all` (concurrency) | `effect` | Parallel execution control             |
+| `Effect.forkDaemon`        | `effect` | Background fire-and-forget             |
+| `Effect.tap` / `tapError`  | `effect` | Side effects in pipelines              |
+| `Layer.merge`              | `effect` | Override single service in layer stack |

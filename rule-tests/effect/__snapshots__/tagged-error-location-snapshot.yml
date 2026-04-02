@@ -1,0 +1,25 @@
+id: tagged-error-location
+snapshots:
+  ? |
+    class HelloError extends Data.TaggedError("HelloError")<{
+      readonly reason: string;
+    }> {}
+  : labels:
+      - source: Data.TaggedError("HelloError")
+        style: primary
+        start: 25
+        end: 55
+  ? |
+    export class FetchError extends Data.TaggedError("FetchError")<{
+      readonly url: string;
+      readonly status: number;
+    }> {
+      get message() {
+        return `Fetch failed: ${this.url}`;
+      }
+    }
+  : labels:
+      - source: Data.TaggedError("FetchError")
+        style: primary
+        start: 32
+        end: 62

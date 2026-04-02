@@ -4,16 +4,20 @@ General TypeScript coding conventions enforced across the codebase.
 
 ## Type Safety Over Convenience
 
-Strictly avoid `any` types (prohibited by Biome) and non-null assertions (`!`). Use proper type definitions and type guards instead of `as any` casts.
+Strictly avoid `any` types (prohibited by oxlint) and non-null assertions (`!`). Use proper type definitions and type guards instead of `as any` casts.
 
 ```typescript
 // Bad
-function processData(data: any): any { return data.someProperty; }
+function processData(data: any): any {
+  return data.someProperty;
+}
 const error = someError as any;
 
 // Good - proper types and type guards
-type DataInput = { someProperty: string; }
-function processData(data: DataInput): string { return data.someProperty; }
+type DataInput = { someProperty: string };
+function processData(data: DataInput): string {
+  return data.someProperty;
+}
 if ("details" in error && typeof error.details === "string") {
   const details = JSON.parse(error.details);
 }
@@ -21,7 +25,7 @@ if ("details" in error && typeof error.details === "string") {
 
 ## Modern JavaScript Performance Patterns
 
-Use `for...of` loops instead of `forEach` for better performance, and template literals instead of string concatenation for cleaner code. Avoid accumulating spread (`...`) in reducers (also enforced by Biome's `noAccumulatingSpread` rule).
+Use `for...of` loops instead of `forEach` for better performance, and template literals instead of string concatenation for cleaner code. Avoid accumulating spread (`...`) in reducers (also enforced by oxlint's `noAccumulatingSpread` rule).
 
 ## Else Blocks and Early Returns
 
@@ -33,11 +37,11 @@ Use `for...of` loops instead of `forEach` for better performance, and template l
 // Bad: Useless else statements
 function getStatusComponent(status: string | undefined) {
   if (status === "error") {
-    return ErrorComponent
+    return ErrorComponent;
   } else if (status === "ok") {
     return OkComponent;
   } else if (status === undefined) {
-    throw new Error("Encountered an unknown status")
+    throw new Error("Encountered an unknown status");
   } else {
     return DefaultComponent;
   }
@@ -46,24 +50,24 @@ function getStatusComponent(status: string | undefined) {
 // Good: return errors early, use clear code blocks and no needless else statements
 function getStatusComponent(status: string | undefined) {
   if (status === undefined) {
-    throw new Error("Encountered an unknown status")
+    throw new Error("Encountered an unknown status");
   }
 
   if (status === "error") {
-    return ErrorComponent
+    return ErrorComponent;
   }
 
   if (status === "ok") {
     return OkComponent;
   }
 
-  return DefaultComponent
+  return DefaultComponent;
 }
 ```
 
 ## Consistent Code Structure
 
-Always use block statements (`{}`) for control flow -- required by Biome. Use 2-space indentation, trailing commas in multiline structures, and group related code with blank lines.
+Always use block statements (`{}`) for control flow -- required by oxlint. Use 2-space indentation, trailing commas in multiline structures, and group related code with blank lines.
 
 ```typescript
 // Bad: Missing curly braces

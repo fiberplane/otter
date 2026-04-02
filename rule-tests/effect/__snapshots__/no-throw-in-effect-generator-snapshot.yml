@@ -7,32 +7,32 @@ snapshots:
       }
     });
   : labels:
-    - source: throw new Error("Missing data");
-      style: primary
-      start: 45
-      end: 77
-    - source: |-
-        Effect.gen(function* () {
-          if (!data) {
-            throw new Error("Missing data");
-          }
-        })
-      style: secondary
-      start: 0
-      end: 84
+      - source: throw new Error("Missing data");
+        style: primary
+        start: 45
+        end: 77
+      - source: |-
+          Effect.gen(function* () {
+            if (!data) {
+              throw new Error("Missing data");
+            }
+          })
+        style: secondary
+        start: 0
+        end: 84
   ? |
     Effect.gen(function* () {
       throw new ValidationError("invalid input");
     });
   : labels:
-    - source: throw new ValidationError("invalid input");
-      style: primary
-      start: 28
-      end: 71
-    - source: |-
-        Effect.gen(function* () {
-          throw new ValidationError("invalid input");
-        })
-      style: secondary
-      start: 0
-      end: 74
+      - source: throw new ValidationError("invalid input");
+        style: primary
+        start: 28
+        end: 71
+      - source: |-
+          Effect.gen(function* () {
+            throw new ValidationError("invalid input");
+          })
+        style: secondary
+        start: 0
+        end: 74

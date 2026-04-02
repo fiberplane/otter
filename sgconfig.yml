@@ -2,8 +2,8 @@
 
 # Rule directories - organized by scope
 ruleDirs:
-  - rules/shared    # Rules for all TypeScript code
-  - rules/effect    # Effect library patterns
+  - rules/shared # Rules for all TypeScript code
+  - rules/effect # Effect library patterns
 
 # Test configuration
 testConfigs:

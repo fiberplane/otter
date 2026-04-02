@@ -1,0 +1,33 @@
+{
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "sortImports": {
+    "groups": [
+      "builtin",
+      "external",
+      ["internal", "subpath"],
+      ["parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ],
+    "newlinesBetween": true
+  },
+  "sortPackageJson": true,
+  "ignorePatterns": [
+    ".claude/",
+    ".agents/",
+    ".codex/",
+    ".fp/",
+    ".pi/",
+    "references/",
+    "dist/",
+    "node_modules/"
+  ]
+}

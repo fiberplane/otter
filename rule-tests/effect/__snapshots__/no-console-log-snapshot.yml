@@ -6,38 +6,38 @@ snapshots:
       return yield* Effect.fail(error);
     });
   : labels:
-    - source: console.error("Failed to fetch:", error)
-      style: primary
-      start: 28
-      end: 68
+      - source: console.error("Failed to fetch:", error)
+        style: primary
+        start: 28
+        end: 68
   ? |
     console.info("Starting process");
   : labels:
-    - source: console.info("Starting process")
-      style: primary
-      start: 0
-      end: 32
+      - source: console.info("Starting process")
+        style: primary
+        start: 0
+        end: 32
   ? |
     console.log("debug", data);
   : labels:
-    - source: console.log("debug", data)
-      style: primary
-      start: 0
-      end: 26
+      - source: console.log("debug", data)
+        style: primary
+        start: 0
+        end: 26
   ? |
     console.warn("This is deprecated");
   : labels:
-    - source: console.warn("This is deprecated")
-      style: primary
-      start: 0
-      end: 34
+      - source: console.warn("This is deprecated")
+        style: primary
+        start: 0
+        end: 34
   ? |
     function processData(data: unknown) {
       console.log("Processing:", data);
       return transformData(data);
     }
   : labels:
-    - source: console.log("Processing:", data)
-      style: primary
-      start: 40
-      end: 72
+      - source: console.log("Processing:", data)
+        style: primary
+        start: 40
+        end: 72

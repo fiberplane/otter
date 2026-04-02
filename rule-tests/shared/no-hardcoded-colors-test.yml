@@ -1,0 +1,19 @@
+id: no-hardcoded-colors
+
+valid:
+  - |
+    const className = "text-foreground bg-primary border-border";
+  - |
+    const className = "text-foreground/80 bg-primary/20";
+  - |
+    const className = "text-sm bg-background";
+
+invalid:
+  - |
+    const className = "text-white bg-red-500";
+  - |
+    const className = "border-gray-200";
+  - |
+    const className = "bg-blue-600/50";
+  - |
+    const className = "text-zinc-400";

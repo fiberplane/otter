@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "typescript/no-explicit-any": "error",
+    "no-console": "off",
+    "oxc/no-accumulating-spread": "error",
+    "curly": "error"
+  },
+  "ignorePatterns": [
+    ".claude/",
+    ".agents/",
+    ".codex/",
+    ".fp/",
+    ".pi/",
+    "references/",
+    "dist/",
+    "node_modules/"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.spec.ts"],
+      "rules": {
+        "typescript/no-explicit-any": "warn"
+      }
+    }
+  ]
+}

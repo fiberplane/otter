@@ -13,5 +13,6 @@
     "exactOptionalPropertyTypes": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true
-  }
+  },
+  "exclude": ["references", "node_modules", "dist"]
 }

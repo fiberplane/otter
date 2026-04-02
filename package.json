@@ -1,23 +1,26 @@
 {
   "name": "@otter/root",
   "private": true,
-  "scripts": {
-    "lint": "bun run --filter '*' lint",
-    "lint:ast": "bunx @ast-grep/cli scan",
-    "lint:drift": "drift lint",
-    "test": "bun run --filter '*' test",
-    "format": "bun run --filter '*' format",
-    "typecheck": "bun run --filter '*' typecheck",
-    "check": "bun run lint:ast && bun run lint:drift && bun run typecheck"
-  },
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "lint": "oxlint",
+    "lint:ast": "bunx @ast-grep/cli scan",
+    "lint:drift": "drift lint",
+    "test": "bun run --filter '*' test",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "typecheck": "tsgo --noEmit",
+    "check": "bun run lint && bun run lint:ast && bun run lint:drift && bun run typecheck"
+  },
   "devDependencies": {
     "@ast-grep/cli": "^0.42.0",
-    "@biomejs/biome": "^2.4.10",
-    "@types/bun": "^1.2.14"
+    "@types/bun": "^1.2.14",
+    "@typescript/native-preview": "7.0.0-dev.20260401.1",
+    "oxfmt": "0.43.0",
+    "oxlint": "1.58.0"
   },
   "trustedDependencies": [
     "@ast-grep/cli"

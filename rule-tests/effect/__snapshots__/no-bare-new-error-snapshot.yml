@@ -1,16 +1,37 @@
 id: no-bare-new-error
 snapshots:
   ? |
+    Effect.fail(new ReferenceError("missing"));
+  : labels:
+      - source: new ReferenceError("missing")
+        style: primary
+        start: 12
+        end: 41
+  ? |
     desktopRuntime.runSync(Deferred.fail(entry.deferred, new Error(message.error)));
   : labels:
-    - source: new Error(message.error)
-      style: primary
-      start: 53
-      end: 77
+      - source: new Error(message.error)
+        style: primary
+        start: 53
+        end: 77
   ? |
     return Effect.fail(new Error("Extension host is not initialized"));
   : labels:
-    - source: new Error("Extension host is not initialized")
-      style: primary
-      start: 19
-      end: 65
+      - source: new Error("Extension host is not initialized")
+        style: primary
+        start: 19
+        end: 65
+  ? |
+    throw new RangeError("Out of bounds");
+  : labels:
+      - source: new RangeError("Out of bounds")
+        style: primary
+        start: 6
+        end: 37
+  ? |
+    throw new TypeError("Expected string");
+  : labels:
+      - source: new TypeError("Expected string")
+        style: primary
+        start: 6
+        end: 38
