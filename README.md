@@ -1,12 +1,16 @@
 <p align="center">
-  <img src="otter.png" alt="otter" width="200" />
+  <img src="otter.png" alt="otter" width="120" />
 </p>
 
-# otter
+<h3 align="center">otter</h3>
 
-Effect.ts monorepo template with agent-friendly tooling for code quality, documentation, and work tracking.
+<p align="center">
+  A light software factory for Effect.ts monorepos
+  <br />
+  with agent-friendly tooling for code quality, documentation, and work tracking.
+</p>
 
-This is a "light factory" — a starter repo that provides structure, conventions, and enforcement so that AI agents (and humans) can build Effect.ts applications with guardrails already in place.
+---
 
 ## Tools
 
