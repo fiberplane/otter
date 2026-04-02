@@ -6,19 +6,19 @@ snapshots:
       message: Schema.String,
     }) {}
   : labels:
-      - source: Schema.ErrorClass("ApiError")
-        style: primary
-        start: 23
-        end: 52
+    - source: Schema.ErrorClass("ApiError")
+      style: primary
+      start: 23
+      end: 52
   ? |
     class HelloError extends Data.TaggedError("HelloError")<{
       readonly reason: string;
     }> {}
   : labels:
-      - source: Data.TaggedError("HelloError")
-        style: primary
-        start: 25
-        end: 55
+    - source: Data.TaggedError("HelloError")
+      style: primary
+      start: 25
+      end: 55
   ? |
     export class FetchError extends Data.TaggedError("FetchError")<{
       readonly url: string;
@@ -29,17 +29,17 @@ snapshots:
       }
     }
   : labels:
-      - source: Data.TaggedError("FetchError")
-        style: primary
-        start: 32
-        end: 62
+    - source: Data.TaggedError("FetchError")
+      style: primary
+      start: 32
+      end: 62
   ? |
     export class RpcError extends Schema.ErrorClass("RpcError")({
       _tag: Schema.tag("RpcError"),
       code: Schema.Number,
     }) {}
   : labels:
-      - source: Schema.ErrorClass("RpcError")
-        style: primary
-        start: 30
-        end: 59
+    - source: Schema.ErrorClass("RpcError")
+      style: primary
+      start: 30
+      end: 59

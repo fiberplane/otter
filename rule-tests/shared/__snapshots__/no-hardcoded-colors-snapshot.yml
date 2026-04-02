@@ -3,28 +3,28 @@ snapshots:
   ? |
     const className = "bg-blue-600/50";
   : labels:
-      - source: bg-blue-600/50
-        style: primary
-        start: 19
-        end: 33
+    - source: bg-blue-600/50
+      style: primary
+      start: 19
+      end: 33
   ? |
     const className = "border-gray-200";
   : labels:
-      - source: border-gray-200
-        style: primary
-        start: 19
-        end: 34
+    - source: border-gray-200
+      style: primary
+      start: 19
+      end: 34
   ? |
     const className = "text-white bg-red-500";
   : labels:
-      - source: text-white bg-red-500
-        style: primary
-        start: 19
-        end: 40
+    - source: text-white bg-red-500
+      style: primary
+      start: 19
+      end: 40
   ? |
     const className = "text-zinc-400";
   : labels:
-      - source: text-zinc-400
-        style: primary
-        start: 19
-        end: 32
+    - source: text-zinc-400
+      style: primary
+      start: 19
+      end: 32

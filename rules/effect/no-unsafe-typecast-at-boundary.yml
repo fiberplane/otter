@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-unsafe-typecast-at-boundary
+language: tsx
+severity: error
+message: "Unsafe type assertion on external data - use Schema.decodeUnknown instead"
+
+rule:
+  any:
+    - pattern: JSON.parse($$$ARGS) as $TYPE
+    - pattern: $OBJ.json() as $TYPE
+    - pattern: (await $OBJ.json()) as $TYPE
+    - pattern: await $OBJ.json() as $TYPE
+    - pattern: $OBJ.body as $TYPE
+    - pattern: $OBJ.text() as $TYPE
+    - pattern: (await $OBJ.text()) as $TYPE
+    - pattern: await $OBJ.text() as $TYPE
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Type assertions (`as`) on external data bypass runtime validation entirely.
+  The data may not match the asserted type, causing silent corruption or
+  crashes far from the original parse site.
+
+  Use `Schema.decodeUnknown` to validate at the boundary:
+
+  ```typescript
+  // ❌ Bad — no runtime validation
+  const data = JSON.parse(body) as MyType;
+  const payload = await response.json() as ApiResponse;
+  const input = request.body as CreateInput;
+
+  // ✅ Good — schema validates at runtime
+  import { Schema } from "effect";
+
+  const data = yield* Schema.decodeUnknown(MySchema)(JSON.parse(body));
+  const payload = yield* Schema.decodeUnknown(ApiResponse)(await response.json());
+
+  // ✅ Good — no cast, just unknown
+  const raw: unknown = JSON.parse(body);
+  ```
+
+  See `docs/patterns/data-validation.md` for the full schema-first pattern.
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

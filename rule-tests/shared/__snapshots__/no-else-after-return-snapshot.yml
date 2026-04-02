@@ -11,15 +11,15 @@ snapshots:
       }
     }
   : labels:
-      - source: |-
-          if (spanStatus === "error") {
-              return ErrorStatusComponent;
-            } else {
-              return OkStatusComponent;
-            }
-        style: primary
-        start: 163
-        end: 270
+    - source: |-
+        if (spanStatus === "error") {
+            return ErrorStatusComponent;
+          } else {
+            return OkStatusComponent;
+          }
+      style: primary
+      start: 163
+      end: 270
   ? |
     if (spanStatus === "error") {
       return ErrorStatusComponent;
@@ -29,15 +29,15 @@ snapshots:
       return SpecialStatusComponent;
     }
   : labels:
-      - source: |-
-          if (spanStatus === "ok") {
-            return OkStatusComponent;
-          } else {
-            return SpecialStatusComponent;
-          }
-        style: primary
-        start: 68
-        end: 166
+    - source: |-
+        if (spanStatus === "ok") {
+          return OkStatusComponent;
+        } else {
+          return SpecialStatusComponent;
+        }
+      style: primary
+      start: 68
+      end: 166
   ? |
     if (status === "connected") {
       return true;
@@ -45,12 +45,12 @@ snapshots:
       return false;
     }
   : labels:
-      - source: |-
-          if (status === "connected") {
-            return true;
-          } else {
-            return false;
-          }
-        style: primary
-        start: 0
-        end: 71
+    - source: |-
+        if (status === "connected") {
+          return true;
+        } else {
+          return false;
+        }
+      style: primary
+      start: 0
+      end: 71

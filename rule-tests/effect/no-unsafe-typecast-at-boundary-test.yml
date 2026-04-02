@@ -1,0 +1,33 @@
+id: no-unsafe-typecast-at-boundary
+
+valid:
+  - |
+    const raw: unknown = JSON.parse(body);
+  - |
+    const data = yield* Schema.decodeUnknown(MySchema)(JSON.parse(body));
+  - |
+    const payload = await response.json();
+  - |
+    const text = await response.text();
+  - |
+    const body = request.body;
+  - |
+    const parsed = JSON.parse(content);
+  - |
+    const config = { endpoint: "/api" } as const;
+
+invalid:
+  - |
+    const data = JSON.parse(body) as MyType;
+  - |
+    const payload = await response.json() as ApiResponse;
+  - |
+    const payload = (await response.json()) as ApiResponse;
+  - |
+    const input = request.body as CreateInput;
+  - |
+    const input = ctx.request.body as CreateInput;
+  - |
+    const text = await response.text() as string;
+  - |
+    const data = JSON.parse(await response.text()) as Config;

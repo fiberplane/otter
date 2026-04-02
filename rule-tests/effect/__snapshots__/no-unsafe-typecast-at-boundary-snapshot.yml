@@ -1,0 +1,51 @@
+id: no-unsafe-typecast-at-boundary
+snapshots:
+  ? |
+    const data = JSON.parse(await response.text()) as Config;
+  : labels:
+    - source: JSON.parse(await response.text()) as Config
+      style: primary
+      start: 13
+      end: 56
+  ? |
+    const data = JSON.parse(body) as MyType;
+  : labels:
+    - source: JSON.parse(body) as MyType
+      style: primary
+      start: 13
+      end: 39
+  ? |
+    const input = ctx.request.body as CreateInput;
+  : labels:
+    - source: ctx.request.body as CreateInput
+      style: primary
+      start: 14
+      end: 45
+  ? |
+    const input = request.body as CreateInput;
+  : labels:
+    - source: request.body as CreateInput
+      style: primary
+      start: 14
+      end: 41
+  ? |
+    const payload = (await response.json()) as ApiResponse;
+  : labels:
+    - source: (await response.json()) as ApiResponse
+      style: primary
+      start: 16
+      end: 54
+  ? |
+    const payload = await response.json() as ApiResponse;
+  : labels:
+    - source: await response.json() as ApiResponse
+      style: primary
+      start: 16
+      end: 52
+  ? |
+    const text = await response.text() as string;
+  : labels:
+    - source: await response.text() as string
+      style: primary
+      start: 13
+      end: 44
