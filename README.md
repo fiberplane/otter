@@ -36,6 +36,8 @@ references/     Shallow clones of upstream repos (gitignored, local-only)
 
 ## Getting started
 
+Install the [prerequisites](#prerequisites), then:
+
 ```bash
 bun install
 ```
@@ -70,3 +72,37 @@ Prints a reminder to stderr when an issue transitions to done, prompting the age
 
 - Run code review (via subagent) if the work was non-trivial
 - Update `docs/` with architectural or flow decisions, using the drift skill to link specs to relevant source files
+
+## Prerequisites
+
+### bun
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+See [bun.sh](https://bun.sh) for more options.
+
+### fp
+
+```bash
+curl -fsSL https://setup.fp.dev/install.sh | sh -s
+```
+
+See [fp.dev](https://fp.dev) for more info.
+
+### drift
+
+See install instructions at [github.com/fiberplane/drift](https://github.com/fiberplane/drift).
+
+### ast-grep
+
+```bash
+# macOS
+brew install ast-grep
+
+# npm
+npm install -g @ast-grep/cli
+```
+
+See [ast-grep.github.io](https://ast-grep.github.io/guide/quick-start.html) for more options.
