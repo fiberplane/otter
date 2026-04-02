@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-json-parse-without-schema
+language: tsx
+severity: error
+message: "Bare JSON.parse without schema validation - use Schema.decodeUnknown to validate parsed data"
+
+rule:
+  pattern: JSON.parse($$$ARGS)
+  not:
+    inside:
+      any:
+        - pattern: Schema.decodeUnknown($SCHEMA)(JSON.parse($$$ARGS))
+        - pattern: Schema.decode($SCHEMA)(JSON.parse($$$ARGS))
+        - pattern: Schema.decodeUnknownSync($SCHEMA)(JSON.parse($$$ARGS))
+        - pattern: Schema.decodeSync($SCHEMA)(JSON.parse($$$ARGS))
+        - pattern: Schema.decodeUnknownEither($SCHEMA)(JSON.parse($$$ARGS))
+        - pattern: Schema.decodeUnknownOption($SCHEMA)(JSON.parse($$$ARGS))
+      stopBy: end
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Bare `JSON.parse` returns `any`, which silently disables type checking
+  on everything downstream. Always validate the result through a Schema.
+
+  ```typescript
+  // ❌ Bad - result is `any`, no runtime validation
+  const data = JSON.parse(body);
+
+  // ❌ Bad - cast hides the `any`, still no validation
+  const data = JSON.parse(body) as MyType;
+
+  // ✅ Good - schema validates and returns typed Effect
+  const data = yield* Schema.decodeUnknown(MySchema)(JSON.parse(body));
+
+  // ✅ Good - in non-Effect code
+  const data = Schema.decodeUnknownSync(MySchema)(JSON.parse(body));
+  ```
+
+  **Note**: `JSON.parse` must be passed directly to a `Schema.decode*` call.
+  Assigning to an intermediate variable will still trigger this rule — this
+  is intentional, as it prevents the unvalidated `any` from leaking.
+
+  See also: `no-unsafe-typecast-at-boundary` (catches `as` casts on parse results).
+  See `docs/patterns/data-validation.md` for the full schema-first pattern.
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

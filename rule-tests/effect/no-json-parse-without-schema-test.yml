@@ -1,0 +1,26 @@
+id: no-json-parse-without-schema
+
+valid:
+  - |
+    const data = yield* Schema.decodeUnknown(MySchema)(JSON.parse(body));
+  - |
+    const data = Schema.decodeUnknownSync(MySchema)(JSON.parse(body));
+  - |
+    const data = yield* Schema.decode(MySchema)(JSON.parse(body));
+  - |
+    const data = Schema.decodeSync(MySchema)(JSON.parse(body));
+  - |
+    const result = Schema.decodeUnknownEither(MySchema)(JSON.parse(body));
+  - |
+    const result = Schema.decodeUnknownOption(MySchema)(JSON.parse(body));
+
+invalid:
+  - |
+    const data = JSON.parse(body);
+  - |
+    const config = JSON.parse(content);
+  - |
+    return JSON.parse(await response.text());
+  - |
+    const raw = JSON.parse(body);
+    const data = yield* Schema.decodeUnknown(MySchema)(raw);

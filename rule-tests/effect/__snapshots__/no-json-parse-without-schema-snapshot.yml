@@ -1,0 +1,31 @@
+id: no-json-parse-without-schema
+snapshots:
+  ? |
+    const config = JSON.parse(content);
+  : labels:
+    - source: JSON.parse(content)
+      style: primary
+      start: 15
+      end: 34
+  ? |
+    const data = JSON.parse(body);
+  : labels:
+    - source: JSON.parse(body)
+      style: primary
+      start: 13
+      end: 29
+  ? |
+    const raw = JSON.parse(body);
+    const data = yield* Schema.decodeUnknown(MySchema)(raw);
+  : labels:
+    - source: JSON.parse(body)
+      style: primary
+      start: 12
+      end: 28
+  ? |
+    return JSON.parse(await response.text());
+  : labels:
+    - source: JSON.parse(await response.text())
+      style: primary
+      start: 7
+      end: 40
