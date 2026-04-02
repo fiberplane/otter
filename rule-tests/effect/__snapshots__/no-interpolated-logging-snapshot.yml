@@ -1,0 +1,110 @@
+id: no-interpolated-logging
+snapshots:
+  ? |
+    Effect.log("Processing user " + userId);
+  : labels:
+    - source: Effect.log("Processing user " + userId)
+      style: primary
+      start: 0
+      end: 39
+  ? |
+    Effect.log(`Processing user ${userId}`);
+  : labels:
+    - source: Effect.log(`Processing user ${userId}`)
+      style: primary
+      start: 0
+      end: 39
+    - source: ${userId}
+      style: secondary
+      start: 28
+      end: 37
+  ? |
+    Effect.logDebug("Cache key: " + key);
+  : labels:
+    - source: 'Effect.logDebug("Cache key: " + key)'
+      style: primary
+      start: 0
+      end: 36
+  ? |
+    Effect.logDebug(`Cache key: ${key}`);
+  : labels:
+    - source: 'Effect.logDebug(`Cache key: ${key}`)'
+      style: primary
+      start: 0
+      end: 36
+    - source: ${key}
+      style: secondary
+      start: 28
+      end: 34
+  ? |
+    Effect.logError("Failed: " + error.message);
+  : labels:
+    - source: 'Effect.logError("Failed: " + error.message)'
+      style: primary
+      start: 0
+      end: 43
+  ? |
+    Effect.logError(`Failed: ${error.message}`);
+  : labels:
+    - source: 'Effect.logError(`Failed: ${error.message}`)'
+      style: primary
+      start: 0
+      end: 43
+    - source: ${error.message}
+      style: secondary
+      start: 25
+      end: 41
+  ? |
+    Effect.logInfo("Request " + requestId + " completed");
+  : labels:
+    - source: Effect.logInfo("Request " + requestId + " completed")
+      style: primary
+      start: 0
+      end: 53
+  ? |
+    Effect.logInfo(`Request ${requestId} completed`);
+  : labels:
+    - source: Effect.logInfo(`Request ${requestId} completed`)
+      style: primary
+      start: 0
+      end: 48
+    - source: ${requestId}
+      style: secondary
+      start: 24
+      end: 36
+  ? |
+    Effect.logWarning("Feature " + name + " deprecated");
+  : labels:
+    - source: Effect.logWarning("Feature " + name + " deprecated")
+      style: primary
+      start: 0
+      end: 52
+  ? |
+    Effect.logWarning(`Feature ${name} deprecated`);
+  : labels:
+    - source: Effect.logWarning(`Feature ${name} deprecated`)
+      style: primary
+      start: 0
+      end: 47
+    - source: ${name}
+      style: secondary
+      start: 27
+      end: 34
+  ? |
+    logger.error("User " + userId + " failed");
+  : labels:
+    - source: logger.error("User " + userId + " failed")
+      style: primary
+      start: 0
+      end: 42
+  ? |
+    logger.info(`User ${userId} updated`);
+  : labels:
+    - source: logger.info(`User ${userId} updated`)
+      style: primary
+      start: 0
+      end: 37
+    - source: ${userId}
+      style: secondary
+      start: 18
+      end: 27

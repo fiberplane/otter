@@ -11,7 +11,7 @@ The following tools must be installed on the host machine:
 | **bun** | Package manager and runtime | [bun.sh](https://bun.sh) |
 | **fp** | Issue tracking and work sessions | [fp.dev](https://fp.dev) |
 | **drift** | Spec-to-code binding and staleness detection | [github.com/fiberplane/drift](https://github.com/fiberplane/drift) |
-| **ast-grep** (`sg`) | Custom TypeScript lint rules | [ast-grep.github.io](https://ast-grep.github.io) |
+| **ast-grep** (`sg`) | Custom lint rules | [ast-grep.github.io](https://ast-grep.github.io) |
 
 ## Monorepo Conventions
 

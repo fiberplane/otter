@@ -1,0 +1,41 @@
+id: no-interpolated-logging
+
+valid:
+  - |
+    Effect.log("Processing data", { userId, status });
+  - |
+    Effect.logInfo("Request completed", { duration_ms });
+  - |
+    Effect.logWarning("Deprecated feature", { feature });
+  - |
+    Effect.logError("Request failed", { error });
+  - |
+    Effect.logDebug("Cache miss", { key });
+  - |
+    logger.info("Processing data", { userId });
+
+invalid:
+  - |
+    Effect.log(`Processing user ${userId}`);
+  - |
+    Effect.log("Processing user " + userId);
+  - |
+    Effect.logInfo(`Request ${requestId} completed`);
+  - |
+    Effect.logInfo("Request " + requestId + " completed");
+  - |
+    Effect.logWarning(`Feature ${name} deprecated`);
+  - |
+    Effect.logWarning("Feature " + name + " deprecated");
+  - |
+    Effect.logError(`Failed: ${error.message}`);
+  - |
+    Effect.logError("Failed: " + error.message);
+  - |
+    Effect.logDebug(`Cache key: ${key}`);
+  - |
+    Effect.logDebug("Cache key: " + key);
+  - |
+    logger.info(`User ${userId} updated`);
+  - |
+    logger.error("User " + userId + " failed");

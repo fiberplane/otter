@@ -7,16 +7,44 @@ message: "Use static log messages with structured fields (no template interpolat
 
 rule:
   any:
-    - pattern: $LOGGER.$METHOD(`$HEAD${$EXPR}$TAIL`)
-    - pattern: $LOGGER.$METHOD($LEFT + $RIGHT)
-    - pattern: Effect.logInfo(`$HEAD${$EXPR}$TAIL`)
-    - pattern: Effect.logWarning(`$HEAD${$EXPR}$TAIL`)
-    - pattern: Effect.logError(`$HEAD${$EXPR}$TAIL`)
-    - pattern: Effect.logDebug(`$HEAD${$EXPR}$TAIL`)
-
-constraints:
-  METHOD:
-    regex: "^(debug|info|warn|error)$"
+    # Generic logger methods (winston, pino, etc.)
+    - all:
+        - pattern: $LOGGER.debug($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: $LOGGER.debug($LEFT + $RIGHT)
+    - all:
+        - pattern: $LOGGER.info($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: $LOGGER.info($LEFT + $RIGHT)
+    - all:
+        - pattern: $LOGGER.warn($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: $LOGGER.warn($LEFT + $RIGHT)
+    - all:
+        - pattern: $LOGGER.error($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: $LOGGER.error($LEFT + $RIGHT)
+    # Effect logging functions
+    - all:
+        - pattern: Effect.log($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: Effect.log($LEFT + $RIGHT)
+    - all:
+        - pattern: Effect.logInfo($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: Effect.logInfo($LEFT + $RIGHT)
+    - all:
+        - pattern: Effect.logWarning($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: Effect.logWarning($LEFT + $RIGHT)
+    - all:
+        - pattern: Effect.logError($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: Effect.logError($LEFT + $RIGHT)
+    - all:
+        - pattern: Effect.logDebug($A)
+        - has: { kind: template_substitution, stopBy: end }
+    - pattern: Effect.logDebug($LEFT + $RIGHT)
 
 files:
   - "apps/**/*.ts"
