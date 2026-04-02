@@ -12,6 +12,16 @@
 
 ---
 
+## Getting started
+
+Install the [prerequisites](#prerequisites), then:
+
+```bash
+bun install
+```
+
+Start your coding agent in this repo and start building. See `AGENTS.md` for the full command reference, enforcement rules, and conventions.
+
 ## Tools
 
 | Tool | Role |
@@ -30,19 +40,7 @@ packages/       Internal shared packages
 docs/           Conventions, templates, architecture notes
 rules/          ast-grep lint rules (shared + Effect-specific)
 .fp/extensions/ fp lifecycle extensions
-.codex/         Codex sandbox configuration
-references/     Shallow clones of upstream repos (gitignored, local-only)
 ```
-
-## Getting started
-
-Install the [prerequisites](#prerequisites), then:
-
-```bash
-bun install
-```
-
-See `AGENTS.md` for the full command reference, enforcement rules, and conventions.
 
 ## fp extensions
 
