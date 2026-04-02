@@ -35,6 +35,26 @@ export class ValidationError extends Data.TaggedError("ValidationError")<{
 }
 ```
 
+## Schema.ErrorClass (Serializable Errors)
+
+For errors that cross service boundaries (API responses, queue messages, RPC), use `Schema.ErrorClass` instead of `Data.TaggedError`. It adds schema validation and JSON serialization:
+
+```typescript
+import { Schema } from "effect";
+
+export class ApiNotFoundError extends Schema.ErrorClass("ApiNotFoundError")({
+  _tag: Schema.tag("ApiNotFoundError"),
+  resource: Schema.String,
+  id: Schema.String,
+}) {
+  get message(): string {
+    return `${this.resource} ${this.id} not found`;
+  }
+}
+```
+
+Use `Data.TaggedError` for in-process errors. Use `Schema.ErrorClass` when errors need to serialize across boundaries. Both must live in `errors.ts`.
+
 ## Service Architecture
 
 Define services with `Context.Tag`:
@@ -293,7 +313,34 @@ const validateInput = (input: string): Effect.Effect<string, ValidationError> =>
   });
 ```
 
-### 5. Ignoring Effect Dependencies
+### 5. Missing `return` Before `yield*` on Early Exits
+
+`yield* Effect.fail(...)` without `return` does not short-circuit the generator — execution continues to the next line. Always use `return yield*` for early exits:
+
+```typescript
+// Bug: generator continues past the fail
+const validate = (input: string) =>
+  Effect.gen(function* () {
+    if (input.length === 0) {
+      yield* Effect.fail(new ValidationError({ field: "input", reason: "empty" }));
+    }
+    // This line still executes!
+    return yield* process(input);
+  });
+
+// Correct: return yield* short-circuits
+const validate = (input: string) =>
+  Effect.gen(function* () {
+    if (input.length === 0) {
+      return yield* Effect.fail(new ValidationError({ field: "input", reason: "empty" }));
+    }
+    return yield* process(input);
+  });
+```
+
+This applies to `Effect.fail`, `Effect.interrupt`, and any other terminal effect in a branch.
+
+### 6. Ignoring Effect Dependencies
 
 ```typescript
 // Bad: Direct imports that should be services
@@ -314,7 +361,7 @@ const readConfig = (): Effect.Effect<Config, Error, FileSystem.FileSystem> =>
   });
 ```
 
-### 6. Using TypeScript Types Instead of Schema
+### 7. Using TypeScript Types Instead of Schema
 
 ```typescript
 // Bad: Defining types separately from validation
@@ -357,7 +404,7 @@ Benefits of Schema-first approach:
 
 **Note**: The `no-interface-in-models` ast-grep rule enforces Schema in model directories. Schema can't express method signatures, so service contracts and internal option types remain regular TypeScript.
 
-### 7. Using console.log Instead of Effect Logging
+### 8. Using console.log Instead of Effect Logging
 
 ```typescript
 // Bad: console methods bypass Effect's logging infrastructure
@@ -373,7 +420,7 @@ yield * Effect.logWarning("Deprecated feature");
 
 Effect logging integrates with the runtime -- it can be configured, filtered, and tested. Console methods bypass all of that.
 
-### 8. Using Effect.runPromise/runSync Inside Effect Code
+### 9. Using Effect.runPromise/runSync Inside Effect Code
 
 ```typescript
 // Bad: Breaking out of Effect to re-enter it
@@ -397,7 +444,7 @@ app.get("/api/data", async (c) => {
 
 `Effect.runPromise`/`runSync` should only appear at the edge of your application -- where Effect meets non-Effect code. Inside Effect code, use `yield*`.
 
-### 9. Manual Either/Exit Inspection
+### 10. Manual Either/Exit Inspection
 
 ```typescript
 // Bad: Checking _tag on Either values
@@ -431,7 +478,7 @@ returns a proper `Either.Either<A, E>` (from `Effect.either`), not a plain
 object union `{_tag: "Right", right: A} | {_tag: "Left", left: E}`. The
 plain object won't work with `Either.isLeft`/`Either.isRight`.
 
-### 10. Silently Swallowing Errors with catchAll
+### 11. Silently Swallowing Errors with catchAll
 
 ```typescript
 // Bad: Error silently disappears -- impossible to debug
@@ -481,6 +528,7 @@ Silent `catchAll` hides failures and makes debugging impossible. Always log the 
 | Pattern                    | Module   | Purpose                                |
 | -------------------------- | -------- | -------------------------------------- |
 | `Data.TaggedError`         | `effect` | Custom error types with context        |
+| `Schema.ErrorClass`        | `effect` | Serializable errors (API, RPC, queues) |
 | `Data.taggedEnum`          | `effect` | Discriminated unions (`$match`, `$is`) |
 | `Context.Tag`              | `effect` | Service definition                     |
 | `Layer.effect`             | `effect` | Creating service layers                |

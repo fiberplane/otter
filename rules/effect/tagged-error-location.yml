@@ -3,10 +3,12 @@
 id: tagged-error-location
 language: tsx
 severity: error
-message: "Define TaggedError classes in errors.ts, not here"
+message: "Define error classes in errors.ts, not here"
 
 rule:
-  pattern: Data.TaggedError($$$ARGS)
+  any:
+    - pattern: Data.TaggedError($$$ARGS)
+    - pattern: Schema.ErrorClass($$$ARGS)
 
 files:
   - "apps/**/*.ts"
@@ -15,12 +17,12 @@ files:
   - "packages/**/*.tsx"
 
 note: |
-  All tagged error definitions must live in errors.ts for discoverability.
-  Import and use them from there — don't define them inline.
+  All error definitions (Data.TaggedError and Schema.ErrorClass) must live
+  in errors.ts for discoverability. Import and use them from there.
 
   Example:
   ```typescript
-  // ❌ Bad: TaggedError in commands/hello.ts
+  // ❌ Bad: error defined in commands/hello.ts
   class HelloError extends Data.TaggedError("HelloError")<{
     readonly reason: string;
   }> {}

@@ -6,6 +6,9 @@ valid:
     Effect.fail(new HelloError({ reason: "test" }));
   - |
     const result = Effect.catchTag("HelloError", (e) => Effect.succeed(fallback));
+  - |
+    import { ApiError } from "../errors";
+    Effect.fail(new ApiError({ message: "test" }));
 
 invalid:
   - |
@@ -21,3 +24,13 @@ invalid:
         return `Fetch failed: ${this.url}`;
       }
     }
+  - |
+    class ApiError extends Schema.ErrorClass("ApiError")({
+      _tag: Schema.tag("ApiError"),
+      message: Schema.String,
+    }) {}
+  - |
+    export class RpcError extends Schema.ErrorClass("RpcError")({
+      _tag: Schema.tag("RpcError"),
+      code: Schema.Number,
+    }) {}
