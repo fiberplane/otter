@@ -46,14 +46,14 @@ rules/          ast-grep lint rules (shared + Effect-specific)
 
 Extensions in `.fp/extensions/` hook into fp's issue lifecycle to enforce workflow quality.
 
-### auto-done
+### `auto-done`
 
 Manages parent/child issue lifecycle automatically.
 
 - **Pre-hook**: blocks marking a parent issue as done if any children are still open
 - **Post-hook**: when the last child is marked done, auto-marks the parent done
 
-### check-before-done
+### `check-before-done`
 
 Gates the done transition on passing checks.
 
@@ -64,7 +64,7 @@ Runs `bun run check` (ast-grep + drift + typecheck) before allowing an issue to 
 checks = "bun run check"  # comma-separated commands
 ```
 
-### done-reminder
+### `done-reminder`
 
 Prints a reminder to stderr when an issue transitions to done, prompting the agent to:
 
