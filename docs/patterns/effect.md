@@ -520,6 +520,8 @@ Silent `catchAll` hides failures and makes debugging impossible. Always log the 
 | `no-runpromise-in-effect` | error    | `Effect.runPromise`/`runSync` -- use `yield*` inside Effect; `Runtime.runPromise` at boundary files only (see `docs/patterns/boundaries.md`) |
 | `no-silent-catch`         | error    | `Effect.catchAll(() => Effect.succeed(...))` without logging -- no silent error swallowing                                                   |
 | `no-interface-in-models`  | error    | `export interface` in models -- use `Schema.Struct` for domain types                                                                         |
+| `no-unsafe-typecast-at-boundary` | error | `as` casts on JSON.parse, .json(), .text(), .body -- use `Schema.decodeUnknown` (see `docs/patterns/data-validation.md`)              |
+| `no-json-parse-without-schema`   | error | Bare `JSON.parse` without `Schema.decode*` wrapper -- validate parsed data through Schema                                             |
 
 **After writing any code**, run `ast-grep scan` from the repo root to check for these anti-patterns.
 

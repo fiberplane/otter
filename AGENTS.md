@@ -16,6 +16,7 @@ Effect.ts monorepo template with agent-friendly tooling for code quality, docume
 - `packages/` — Internal shared packages consumed by apps
 - Each app and package has its own `package.json` and `tsconfig.json` extending the root
 - **Boundary convention**: Adapter files (`*.adapter.ts` or `adapters/`) wrap external SDKs and services that don't have Effect abstractions. Effect platform services (`FileSystem`, `HttpClient`, etc.) are already traced and injectable — use them freely in interior code. See `docs/patterns/boundaries.md`.
+- **Schema-first at boundaries**: All external data (HTTP bodies, JSON files, messages) must be validated through `Schema.decodeUnknown` before use. No `as` casts on parsed data, no bare `JSON.parse`. See `docs/patterns/data-validation.md`.
 - **App templates**: To build new apps (CLI, API, worker), see `docs/templates/`.
 
 ## Prerequisites
@@ -49,6 +50,7 @@ EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 | -------------------------------- | ------------------------------------------ |
 | Effect conventions               | `docs/patterns/effect.md`                  |
 | Boundary conventions             | `docs/patterns/boundaries.md`              |
+| Data validation at boundaries    | `docs/patterns/data-validation.md`         |
 | Coding style                     | `docs/patterns/coding-style.md`            |
 | Observability setup              | `docs/patterns/observability.md`           |
 | App templates (CLI, API, worker) | `docs/templates/`                          |
