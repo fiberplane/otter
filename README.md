@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="otter.png" alt="otter" width="200" />
+</p>
+
 # otter
 
 Effect.ts monorepo template with agent-friendly tooling for code quality, documentation, and work tracking.
