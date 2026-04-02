@@ -39,7 +39,7 @@ const init: ExtensionInit = (fp) => {
     }
   });
 
-  fp.log.info("Auto-done extension loaded");
+
 };
 
 export default init;

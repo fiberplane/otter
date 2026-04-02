@@ -48,7 +48,7 @@ const init: ExtensionInit = (fp) => {
     return undefined;
   });
 
-  fp.log.info(`Check-before-done loaded — will run: ${checks.join(", ")}`);
+
 };
 
 export default init;
