@@ -93,7 +93,11 @@ See [fp.dev](https://fp.dev) for more info.
 
 ### drift
 
-See install instructions at [github.com/fiberplane/drift](https://github.com/fiberplane/drift).
+```bash
+curl -fsSL https://drift.fp.dev/install.sh | sh
+```
+
+See [github.com/fiberplane/drift](https://github.com/fiberplane/drift) for more info.
 
 ### ast-grep
 
