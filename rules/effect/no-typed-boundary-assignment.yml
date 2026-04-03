@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-typed-boundary-assignment
+language: tsx
+severity: error
+message: "Unsafe typed assignment on external data - validate first, then assign the decoded value"
+
+rule:
+  all:
+    - any:
+        - pattern: "const $VAR: $TYPE = JSON.parse($$$ARGS)"
+        - pattern: "let $VAR: $TYPE = JSON.parse($$$ARGS)"
+        - pattern: "var $VAR: $TYPE = JSON.parse($$$ARGS)"
+        - pattern: "const $VAR: $TYPE = await $OBJ.json()"
+        - pattern: "let $VAR: $TYPE = await $OBJ.json()"
+        - pattern: "var $VAR: $TYPE = await $OBJ.json()"
+        - pattern: "const $VAR: $TYPE = $OBJ.body"
+        - pattern: "let $VAR: $TYPE = $OBJ.body"
+        - pattern: "var $VAR: $TYPE = $OBJ.body"
+    - not:
+        any:
+          - pattern: "const $VAR: unknown = JSON.parse($$$ARGS)"
+          - pattern: "let $VAR: unknown = JSON.parse($$$ARGS)"
+          - pattern: "var $VAR: unknown = JSON.parse($$$ARGS)"
+          - pattern: "const $VAR: unknown = await $OBJ.json()"
+          - pattern: "let $VAR: unknown = await $OBJ.json()"
+          - pattern: "var $VAR: unknown = await $OBJ.json()"
+          - pattern: "const $VAR: unknown = $OBJ.body"
+          - pattern: "let $VAR: unknown = $OBJ.body"
+          - pattern: "var $VAR: unknown = $OBJ.body"
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  A type annotation on a variable initialized from external data is still an
+  unchecked cast in practice. The compiler will trust the annotation, but the
+  runtime has not verified the value.
+
+  Validate first, then assign the decoded value:
+
+  ```typescript
+  // ❌ Bad - annotation trusts unvalidated input
+  const payload: ApiResponse = await response.json();
+
+  // ✅ Good - decode at the boundary, then work with the typed result
+  const payload = yield* Schema.decodeUnknown(ApiResponse)(await response.json());
+  ```
+
+  See also: `no-unsafe-typecast-at-boundary` (catches `as` casts on boundary data).
+  See `docs/patterns/data-validation.md` for the full schema-first pattern.
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

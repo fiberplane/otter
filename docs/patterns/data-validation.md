@@ -161,7 +161,19 @@ processData(data); // No type safety here
 
 Caught by: `no-json-parse-without-schema` ast-grep rule.
 
-### 3. Intermediate Variable Before Validation
+### 3. Typed Assignment on Boundary Data
+
+```typescript
+// ❌ Type annotation still trusts unvalidated data
+const payload: ApiResponse = await response.json();
+
+// ❌ Same problem with parsed strings
+const config: AppConfig = JSON.parse(body);
+```
+
+Caught by: `no-typed-boundary-assignment` ast-grep rule.
+
+### 4. Intermediate Variable Before Validation
 
 ```typescript
 // ❌ Still flagged — the `any` leaks into `raw`
@@ -176,7 +188,7 @@ Pass `JSON.parse` directly to the Schema decode call. This keeps the unvalidated
 const data = yield* Schema.decodeUnknown(MySchema)(JSON.parse(body));
 ```
 
-### 4. Interface Instead of Schema in Models
+### 5. Interface Instead of Schema in Models
 
 ```typescript
 // ❌ Type and validation are separate — they drift apart
@@ -198,4 +210,5 @@ Caught by: `no-interface-in-models` ast-grep rule (in `models/` and `domain/` di
 | ----------------------------------- | -------------------------------------------------------- |
 | `no-unsafe-typecast-at-boundary`    | `as` casts on JSON.parse, .json(), .text(), .body        |
 | `no-json-parse-without-schema`      | Bare JSON.parse without Schema.decode* wrapper           |
+| `no-typed-boundary-assignment`      | Typed variable assignment from JSON.parse, .json(), .body |
 | `no-interface-in-models`            | `export interface` in model dirs (use Schema.Struct)     |

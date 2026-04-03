@@ -1,0 +1,30 @@
+id: no-typed-boundary-assignment
+snapshots:
+  ? |
+    const config: AppConfig = JSON.parse(body);
+  : labels:
+    - source: 'const config: AppConfig = JSON.parse(body);'
+      style: primary
+      start: 0
+      end: 43
+  ? |
+    const input: CreateInput = request.body;
+  : labels:
+    - source: 'const input: CreateInput = request.body;'
+      style: primary
+      start: 0
+      end: 40
+  ? |
+    const payload: ApiResponse = await response.json();
+  : labels:
+    - source: 'const payload: ApiResponse = await response.json();'
+      style: primary
+      start: 0
+      end: 51
+  ? |
+    let payload: ApiResponse = await response.json();
+  : labels:
+    - source: 'let payload: ApiResponse = await response.json();'
+      style: primary
+      start: 0
+      end: 49

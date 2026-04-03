@@ -1,0 +1,23 @@
+id: no-typed-boundary-assignment
+
+valid:
+  - |
+    const payload = await response.json();
+  - |
+    const payload = yield* Schema.decodeUnknown(ApiResponse)(await response.json());
+  - |
+    const config = yield* Schema.decodeUnknown(AppConfig)(JSON.parse(body));
+  - |
+    const raw: unknown = JSON.parse(body);
+  - |
+    const body = request.body;
+
+invalid:
+  - |
+    const payload: ApiResponse = await response.json();
+  - |
+    let payload: ApiResponse = await response.json();
+  - |
+    const config: AppConfig = JSON.parse(body);
+  - |
+    const input: CreateInput = request.body;
