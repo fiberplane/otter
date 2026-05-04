@@ -55,6 +55,10 @@ EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 | Observability setup              | `docs/patterns/observability.md`           |
 | App templates (CLI, API, worker) | `docs/templates/`                          |
 | Architecture notes               | `docs/architecture/`                       |
+| Proposals (active designs)       | `docs/proposals/active/`                   |
+| Experiments and demo evidence    | `docs/experiments/`                        |
+| Testing patterns                 | `docs/testing/`                            |
+| Retired docs                     | `docs/graveyard/`                          |
 | Docs convention guide            | `docs/README.md`                           |
 | ast-grep rules                   | `rules/shared/`, `rules/effect/`           |
 | ast-grep rule tests              | `rule-tests/shared/`, `rule-tests/effect/` |
