@@ -1,0 +1,16 @@
+# Dotfiles to copy into new git worktrees
+# Uses .gitignore syntax — only gitignored files matching these patterns get copied
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# MCP server config
+.mcp.json
+
+# FP local config (auth tokens, local overrides)
+.fp/config.local.toml
+
+# Claude Code local settings
+.claude/**/*.local.json
