@@ -1,9 +1,76 @@
-# Allow fp CLI commands in the Codex sandbox
-prefix_rule(pattern=["fp"], decision="allow", justification="fp CLI for issue tracking and project management")
-prefix_rule(pattern=["fp", "issue", "create"], decision="allow", justification="allow extension-triggered background issue creation")
-prefix_rule(pattern=["fp", "comment"], decision="allow", justification="allow extension-triggered background status/review comments")
-prefix_rule(pattern=["fp", "issue", "diff"], decision="allow", justification="allow extension-triggered diff reads before review")
-prefix_rule(pattern=["fp", "comment", "list"], decision="allow", justification="allow extension-triggered comment context reads")
+# Allow routine fp CLI workflows in the Codex sandbox without allowing every fp
+# subcommand. Commands not matched here will still prompt normally.
+prefix_rule(
+    pattern=["fp", ["issue", "issues", "i"], ["list", "show", "get", "create", "update", "edit", "diff", "files", "assign", "sessions"]],
+    decision="allow",
+    justification="allow issue tracking workflows used by agents",
+    match=[
+        "fp issue create --title Test",
+        "fp issue update FP-123 --status done",
+        "fp issues list --format json",
+        "fp issues show FP-123",
+        "fp i diff FP-123",
+    ],
+    not_match=[
+        "fp issue delete FP-123",
+        "fp issues delete FP-123",
+        "fp i delete FP-123",
+    ],
+)
+prefix_rule(
+    pattern=["fp", ["comment", "comments", "c"], ["list", "add", "create"]],
+    decision="allow",
+    justification="allow issue comment reads and writes used by agents",
+    match=[
+        "fp comment list FP-123",
+        "fp comment add FP-123 Done",
+        "fp comments create FP-123 Done",
+        "fp c list FP-123 --format json",
+    ],
+    not_match=[
+        "fp comment delete comment-123",
+        "fp comments delete comment-123",
+        "fp c delete comment-123",
+        "fp comment FP-123 Done",
+    ],
+)
+prefix_rule(
+    pattern=["fp", ["tree", "log", "logs", "context", "search"]],
+    decision="allow",
+    justification="allow read-only issue and project context commands",
+    match=[
+        "fp tree",
+        "fp log FP-123",
+        "fp logs --limit 50",
+        "fp context FP-123",
+        "fp search sync state",
+    ],
+    not_match=[
+        "fp attach screenshot.png",
+        "fp run FP-123",
+        "fp update",
+    ],
+)
+prefix_rule(
+    pattern=["fp", ["project", "projects", "p"], ["list", "remote", "test-connection", "sync", "sync-all-projects"]],
+    decision="allow",
+    justification="allow project inspection and sync commands used by agents",
+    match=[
+        "fp project list",
+        "fp projects remote",
+        "fp p test-connection",
+        "fp project remote",
+        "fp project sync FP-123",
+        "fp project sync-all-projects",
+    ],
+    not_match=[
+        "fp project export",
+        "fp project gc",
+        "fp project import export.jsonl",
+        "fp project db compact",
+        "fp project unlink",
+    ],
+)
 
 # Allow drift CLI for spec-to-code binding
 prefix_rule(pattern=["drift"], decision="allow", justification="drift CLI for spec staleness checking and linking")
