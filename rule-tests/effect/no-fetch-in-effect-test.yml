@@ -1,0 +1,51 @@
+id: no-fetch-in-effect
+
+valid:
+  - |
+    const httpClient = yield* HttpClient.HttpClient;
+    const result = yield* httpClient.get(url);
+  - |
+    const response = yield* httpClient.get(url).pipe(
+      Effect.flatMap(HttpClientResponse.filterStatusOk),
+      Effect.flatMap(HttpClientResponse.schemaBodyJson(Manifest)),
+    );
+  - |
+    Effect.tryPromise({ try: () => readFile(path), catch: (e) => new FsError({ cause: e }) });
+  - |
+    Effect.tryPromise(() => readFile(path));
+  - |
+    Effect.tryPromise(() => api.fetch(url));
+  - |
+    Effect.tryPromise({
+      try: async () => {
+        const body = await loadBody();
+        return body.parse();
+      },
+      catch: (e) => new FsError({ cause: e }),
+    });
+
+invalid:
+  - |
+    yield* Effect.tryPromise({ try: () => fetch(url) });
+  - |
+    yield* Effect.tryPromise({
+      try: () => fetch(url, { signal: controller.signal }),
+      catch: (error) => new FetchError({ reason: String(error) }),
+    });
+  - |
+    Effect.tryPromise(() => fetch(url));
+  - |
+    Effect.tryPromise(() => fetch(url, { method: "POST", body: payload }));
+  - |
+    Effect.tryPromise({
+      try: async () => {
+        const r = await fetch(url);
+        return r.json();
+      },
+      catch: (error) => new FetchError({ reason: String(error) }),
+    });
+  - |
+    Effect.tryPromise(async () => {
+      const r = await fetch(url);
+      return r.json();
+    });

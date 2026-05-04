@@ -70,8 +70,10 @@ Custom lint rules in `rules/`, run via `bun run lint:ast`.
 | `no-bare-new-error`       | `new Error()`, `new TypeError()`, etc. — use TaggedError or let unknowns propagate  |
 | `no-console-log`          | `console.*` — use `Effect.log`                                                      |
 | `no-direct-fs`            | Direct `node:fs` imports — use Effect's FileSystem service                          |
+| `no-fetch-in-effect`      | `Effect.tryPromise` wrapping `fetch()` — use `@effect/platform`'s `HttpClient`      |
 | `no-interface-in-models`  | `export interface` in models — use `Schema.Struct`                                  |
 | `no-interpolated-logging` | Template literals or concatenation in log calls — use structured annotations        |
+| `no-manual-json-decode`   | `Effect.try({ try: () => JSON.parse(...) })` — use `Schema.parseJson(Inner)`        |
 | `no-manual-tag-check`     | Manual `._tag` checks — use `Effect.catchTag` or `Match.tag`                        |
 | `no-runpromise-in-effect` | `Effect.runPromise`/`runSync` inside Effect code — use `yield*` or boundary pattern |
 | `no-silent-catch`         | `Effect.catchAll` without logging — always log before recovering                    |

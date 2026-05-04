@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-manual-json-decode
+language: tsx
+severity: error
+message: "Use Schema.parseJson(InnerSchema) instead of Effect.try(JSON.parse) + Schema.decodeUnknown"
+
+# Matches Effect.try wrappers whose try-body is a JSON.parse call, in both
+# the explicit object form and the shorthand.
+rule:
+  any:
+    - pattern: "Effect.try({ try: () => JSON.parse($$$) })"
+    - pattern: "Effect.try({ try: () => JSON.parse($$$), $$$REST })"
+    - pattern: "Effect.try({ try: () => JSON.parse($$$) as $_, $$$REST })"
+    - pattern: "Effect.try(() => JSON.parse($$$))"
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Manual JSON.parse followed by Schema.decodeUnknown splits one conceptual
+  operation into two error-prone steps. Schema.parseJson(Inner) fuses them
+  into a single schema whose input is a string.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  const parsed = yield* Effect.either(
+    Effect.try({ try: () => JSON.parse(content), catch: (e) => e }),
+  );
+  if (Either.isLeft(parsed)) return Option.none();
+  const decoded = yield* Effect.either(Schema.decodeUnknown(MySchema)(parsed.right));
+  if (Either.isLeft(decoded)) return Option.none();
+  return Option.some(decoded.right);
+
+  // ✅ Good
+  return yield* pipe(
+    Schema.decodeUnknown(Schema.parseJson(MySchema))(content),
+    Effect.option,
+  );
+  ```
+
+  See `docs/patterns/effect.md` "JSON decoding via Schema.parseJson", and
+  `docs/patterns/data-validation.md` for the broader schema-first pattern.
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

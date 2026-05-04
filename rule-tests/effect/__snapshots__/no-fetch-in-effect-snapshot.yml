@@ -1,0 +1,79 @@
+id: no-fetch-in-effect
+snapshots:
+  ? |
+    Effect.tryPromise(() => fetch(url));
+  : labels:
+    - source: Effect.tryPromise(() => fetch(url))
+      style: primary
+      start: 0
+      end: 35
+  ? |
+    Effect.tryPromise(() => fetch(url, { method: "POST", body: payload }));
+  : labels:
+    - source: 'Effect.tryPromise(() => fetch(url, { method: "POST", body: payload }))'
+      style: primary
+      start: 0
+      end: 70
+  ? |
+    Effect.tryPromise(async () => {
+      const r = await fetch(url);
+      return r.json();
+    });
+  : labels:
+    - source: |-
+        Effect.tryPromise(async () => {
+          const r = await fetch(url);
+          return r.json();
+        })
+      style: primary
+      start: 0
+      end: 83
+    - source: fetch(url)
+      style: secondary
+      start: 50
+      end: 60
+  ? |
+    Effect.tryPromise({
+      try: async () => {
+        const r = await fetch(url);
+        return r.json();
+      },
+      catch: (error) => new FetchError({ reason: String(error) }),
+    });
+  : labels:
+    - source: |-
+        Effect.tryPromise({
+          try: async () => {
+            const r = await fetch(url);
+            return r.json();
+          },
+          catch: (error) => new FetchError({ reason: String(error) }),
+        })
+      style: primary
+      start: 0
+      end: 164
+    - source: fetch(url)
+      style: secondary
+      start: 61
+      end: 71
+  ? |
+    yield* Effect.tryPromise({
+      try: () => fetch(url, { signal: controller.signal }),
+      catch: (error) => new FetchError({ reason: String(error) }),
+    });
+  : labels:
+    - source: |-
+        Effect.tryPromise({
+          try: () => fetch(url, { signal: controller.signal }),
+          catch: (error) => new FetchError({ reason: String(error) }),
+        })
+      style: primary
+      start: 7
+      end: 148
+  ? |
+    yield* Effect.tryPromise({ try: () => fetch(url) });
+  : labels:
+    - source: 'Effect.tryPromise({ try: () => fetch(url) })'
+      style: primary
+      start: 7
+      end: 51

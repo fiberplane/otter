@@ -211,4 +211,5 @@ Caught by: `no-interface-in-models` ast-grep rule (in `models/` and `domain/` di
 | `no-unsafe-typecast-at-boundary`    | `as` casts on JSON.parse, .json(), .text(), .body        |
 | `no-json-parse-without-schema`      | Bare JSON.parse without Schema.decode* wrapper           |
 | `no-typed-boundary-assignment`      | Typed variable assignment from JSON.parse, .json(), .body |
+| `no-manual-json-decode`             | `Effect.try({ try: () => JSON.parse(...) })` — use `Schema.parseJson(Inner)` |
 | `no-interface-in-models`            | `export interface` in model dirs (use Schema.Struct)     |

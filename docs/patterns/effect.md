@@ -120,14 +120,16 @@ const fromCallback = <A>(register: (cb: (result: A) => void) => void): Effect.Ef
 Use `Effect.tryPromise` to wrap a promise and map its error:
 
 ```typescript
-const fetchData = (url: string) =>
+const publishMessage = (client: PubSubClient, payload: Payload) =>
   Effect.tryPromise({
-    try: () => fetch(url).then((r) => r.json()),
-    catch: (error) => new FetchError({ url, cause: error }),
+    try: () => client.publish("events", payload),
+    catch: (error) => new PublishError({ topic: "events", cause: error }),
   });
 ```
 
 These wrappers belong in boundary files (`*.adapter.ts` or `adapters/`). See `docs/patterns/boundaries.md` for the full convention on what goes where.
+
+For HTTP specifically, prefer `@effect/platform`'s `HttpClient` over `Effect.tryPromise(() => fetch(...))` — see code smell #12 below. The `no-fetch-in-effect` rule enforces this.
 
 ### Effect.all with Concurrency
 
@@ -504,6 +506,115 @@ Effect.catchTag("NetworkError", (err) =>
 
 Silent `catchAll` hides failures and makes debugging impossible. Always log the error before recovering, or catch specific error tags instead.
 
+### 12. HttpClient over raw fetch
+
+```typescript
+// Bad: raw fetch wrapped in tryPromise, manual AbortController, untyped errors
+const response = yield* Effect.tryPromise({
+  try: () => fetch(url, { signal: controller.signal }),
+  catch: (error) => new MyFetchError({ reason: String(error) }),
+});
+if (!response.ok) { /* ... */ }
+const json = yield* Effect.tryPromise({ try: () => response.json(), catch: ... });
+const decoded = yield* Schema.decodeUnknown(Manifest)(json);
+
+// Good: HttpClient + filterStatusOk + schemaBodyJson + Effect.timeoutFail
+const httpClient = yield* HttpClient.HttpClient;
+const manifest = yield* httpClient.get(url).pipe(
+  Effect.flatMap(HttpClientResponse.filterStatusOk),
+  Effect.flatMap(HttpClientResponse.schemaBodyJson(Manifest)),
+  Effect.timeoutFail({
+    duration: "3 seconds",
+    onTimeout: () => new MyFetchError({ reason: "timeout" }),
+  }),
+);
+```
+
+Requires an `HttpClient` layer (e.g. `FetchHttpClient.layer`) in the layer stack.
+
+Benefits:
+
+- Typed error channel: `RequestError | ResponseError | ParseError`. No stringly-typed `String(error)` round-trip.
+- `filterStatusOk` turns 4xx/5xx into `ResponseError` without an explicit `if (!response.ok)` branch.
+- `schemaBodyJson` replaces `response.json() → Schema.decodeUnknown(...)` with a single step that fails cleanly into `ParseError`.
+- Effect fibers cancel via `Effect.timeoutFail`; no manual `AbortController` + `clearTimeout` choreography.
+
+The `no-fetch-in-effect` rule catches `Effect.tryPromise` wrappers around `fetch(...)`.
+
+### 13. Tagged variants over string-literal unions
+
+```typescript
+// Bad: return type is a string-literal union; failures lose context
+type SkipReason = "bundled" | "ci-env" | "fetch-failed" | "ok";
+
+const performCheck = (): Effect.Effect<SkipReason> =>
+  Effect.gen(function* () {
+    if (isBundled()) return "bundled";
+    const manifest = yield* Effect.either(fetch());
+    if (Either.isLeft(manifest)) return "fetch-failed"; // why? no idea
+    return "ok";
+  });
+
+// Good: Data.TaggedEnum -- tags are the discriminator, payload carries context
+type CheckResult = Data.TaggedEnum<{
+  Bundled: {};
+  CiEnv: {};
+  FetchFailed: { readonly reason: string };
+  Ok: {};
+}>;
+const CheckResult = Data.taggedEnum<CheckResult>();
+
+const performCheck = (): Effect.Effect<CheckResult> =>
+  Effect.gen(function* () {
+    if (isBundled()) return CheckResult.Bundled();
+    const manifest = yield* Effect.either(fetch());
+    if (Either.isLeft(manifest)) {
+      return CheckResult.FetchFailed({ reason: manifest.left.message });
+    }
+    return CheckResult.Ok();
+  });
+
+// Exhaustive pattern match via $match
+CheckResult.$match(result, {
+  Bundled: () => "skipped (bundled)",
+  CiEnv: () => "skipped (CI)",
+  FetchFailed: ({ reason }) => `skipped (fetch failed: ${reason})`,
+  Ok: () => "ok",
+});
+```
+
+Benefits:
+
+- Exhaustiveness: adding a new variant breaks `$match` callers at compile time.
+- Payload: failure variants carry context (`reason: string`) so debug logs don't lose information.
+- Refactor safety: rename a variant and TypeScript finds every site. String literals silently rot.
+
+### 14. JSON decoding via `Schema.parseJson`
+
+```typescript
+// Bad: parse then decode as two separate steps, each with its own error handling
+const parseResult = yield* Effect.either(
+  Effect.try({
+    try: () => JSON.parse(content) as unknown,
+    catch: (error) => error,
+  }),
+);
+if (Either.isLeft(parseResult)) return Option.none();
+const decoded = yield* Effect.either(Schema.decodeUnknown(MySchema)(parseResult.right));
+if (Either.isLeft(decoded)) return Option.none();
+return Option.some(decoded.right);
+
+// Good: Schema.parseJson fuses parse + decode into one schema
+return yield* pipe(
+  Schema.decodeUnknown(Schema.parseJson(MySchema))(content),
+  Effect.option,
+);
+```
+
+`Schema.parseJson(Inner)` returns a schema whose input is a string. Decoding it runs `JSON.parse` and validates the result in a single `ParseError` channel. Combined with `Effect.option`, the whole "read + parse + validate or fall back" pipeline collapses to one line.
+
+The `no-manual-json-decode` rule catches `Effect.try({ try: () => JSON.parse(...) })` and its shorthand. See also `no-json-parse-without-schema` (catches bare `JSON.parse` outside a `Schema.decode*` wrapper) and `docs/patterns/data-validation.md`.
+
 ## ast-grep Rules We Enforce
 
 ### Effect rules (`rules/effect/`) -- apply to `apps/**` and `packages/**`:
@@ -523,6 +634,8 @@ Silent `catchAll` hides failures and makes debugging impossible. Always log the 
 | `no-unsafe-typecast-at-boundary` | error | `as` casts on JSON.parse, .json(), .text(), .body -- use `Schema.decodeUnknown` (see `docs/patterns/data-validation.md`)              |
 | `no-json-parse-without-schema`   | error | Bare `JSON.parse` without `Schema.decode*` wrapper -- validate parsed data through Schema                                             |
 | `no-typed-boundary-assignment`   | error | Typed variable assignment from JSON.parse, .json(), .body -- decode first, then assign                                                |
+| `no-fetch-in-effect`      | error    | `Effect.tryPromise` wrapping `fetch(...)` -- use `@effect/platform`'s `HttpClient`                                                            |
+| `no-manual-json-decode`   | error    | `Effect.try({ try: () => JSON.parse(...) })` -- use `Schema.parseJson(Inner)` to fuse parse + decode                                           |
 
 **After writing any code**, run `ast-grep scan` from the repo root to check for these anti-patterns.
 

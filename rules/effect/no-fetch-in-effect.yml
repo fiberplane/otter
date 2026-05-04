@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/typescript_rule.json
+
+id: no-fetch-in-effect
+language: tsx
+severity: error
+message: "Use @effect/platform's HttpClient instead of raw fetch wrapped in Effect.tryPromise"
+
+# Matches Effect.tryPromise wrappers that contain a call to the global `fetch`,
+# covering:
+#   - Expression-bodied arrow: Effect.tryPromise({ try: () => fetch(...) })
+#   - Object form with catch:  Effect.tryPromise({ try: () => fetch(...), catch: ... })
+#   - Shorthand callback:      Effect.tryPromise(() => fetch(...))
+#   - Block-bodied arrow:      Effect.tryPromise({ try: async () => { await fetch(...) } })
+# The first three are caught by direct patterns; the fourth is caught by the
+# `has` clause that finds any nested `fetch($$$)` call inside the wrapper.
+rule:
+  any:
+    - pattern: "Effect.tryPromise({ try: () => fetch($$$) })"
+    - pattern: "Effect.tryPromise({ try: () => fetch($$$), $$$REST })"
+    - pattern: "Effect.tryPromise(() => fetch($$$))"
+    - all:
+        - any:
+            - pattern: "Effect.tryPromise({ $$$ARGS })"
+            - pattern: "Effect.tryPromise($CALLBACK)"
+        - has:
+            pattern: fetch($$$FETCH_ARGS)
+            stopBy: end
+
+files:
+  - "apps/**/*.ts"
+  - "apps/**/*.tsx"
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+
+note: |
+  Wrapping raw fetch in Effect.tryPromise loses Effect's typed error channel
+  and forces manual AbortController + timeout choreography. Use
+  @effect/platform's HttpClient instead.
+
+  Example:
+  ```typescript
+  // ❌ Bad
+  const response = yield* Effect.tryPromise({
+    try: () => fetch(url, { signal: controller.signal }),
+    catch: (error) => new FetchError({ reason: String(error) }),
+  });
+
+  // ✅ Good
+  const httpClient = yield* HttpClient.HttpClient;
+  const result = yield* httpClient.get(url).pipe(
+    Effect.flatMap(HttpClientResponse.filterStatusOk),
+    Effect.flatMap(HttpClientResponse.schemaBodyJson(Manifest)),
+    Effect.timeoutFail({
+      duration: "3 seconds",
+      onTimeout: () => new FetchError({ reason: "timeout" }),
+    }),
+  );
+  ```
+
+  Requires `FetchHttpClient.layer` (or another `HttpClient` layer) in the
+  layer stack. See `docs/patterns/effect.md` "HttpClient over raw fetch".
+
+ignores:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/node_modules/**"

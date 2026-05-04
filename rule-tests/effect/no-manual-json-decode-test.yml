@@ -1,0 +1,30 @@
+id: no-manual-json-decode
+
+valid:
+  - |
+    const decoded = yield* Schema.decodeUnknown(Schema.parseJson(MySchema))(content);
+  - |
+    return yield* pipe(
+      Schema.decodeUnknown(Schema.parseJson(MySchema))(content),
+      Effect.option,
+    );
+  - |
+    Effect.try({ try: () => parseCustomFormat(content), catch: (e) => new ParseError({ cause: e }) });
+  - |
+    Effect.try(() => doSomethingElse());
+
+invalid:
+  - |
+    yield* Effect.try({ try: () => JSON.parse(content) });
+  - |
+    yield* Effect.try({
+      try: () => JSON.parse(content),
+      catch: (error) => new JsonParseError({ cause: error }),
+    });
+  - |
+    Effect.try(() => JSON.parse(body));
+  - |
+    yield* Effect.try({
+      try: () => JSON.parse(content) as MyType,
+      catch: (error) => error,
+    });

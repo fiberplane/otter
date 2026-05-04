@@ -1,0 +1,44 @@
+id: no-manual-json-decode
+snapshots:
+  ? |
+    Effect.try(() => JSON.parse(body));
+  : labels:
+    - source: Effect.try(() => JSON.parse(body))
+      style: primary
+      start: 0
+      end: 34
+  ? |
+    yield* Effect.try({
+      try: () => JSON.parse(content) as MyType,
+      catch: (error) => error,
+    });
+  : labels:
+    - source: |-
+        Effect.try({
+          try: () => JSON.parse(content) as MyType,
+          catch: (error) => error,
+        })
+      style: primary
+      start: 7
+      end: 93
+  ? |
+    yield* Effect.try({
+      try: () => JSON.parse(content),
+      catch: (error) => new JsonParseError({ cause: error }),
+    });
+  : labels:
+    - source: |-
+        Effect.try({
+          try: () => JSON.parse(content),
+          catch: (error) => new JsonParseError({ cause: error }),
+        })
+      style: primary
+      start: 7
+      end: 114
+  ? |
+    yield* Effect.try({ try: () => JSON.parse(content) });
+  : labels:
+    - source: 'Effect.try({ try: () => JSON.parse(content) })'
+      style: primary
+      start: 7
+      end: 53
