@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "lint": "oxlint",
-    "lint:ast": "bunx @ast-grep/cli scan",
+    "lint:ast": "ast-grep scan",
     "lint:drift": "drift lint",
     "test": "bun run --filter '*' test",
     "format": "oxfmt --write .",
