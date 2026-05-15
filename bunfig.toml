@@ -1,3 +1,6 @@
 [install]
 # Use exact versions for reproducible installs
 exact = true
+# Supply-chain attack mitigation: refuse package versions published less than
+# 7 days ago, giving the ecosystem time to flag and yank compromised releases.
+minimumReleaseAge = 604800
