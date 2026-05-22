@@ -12,6 +12,10 @@
         "oxlint": "1.58.0",
       },
     },
+    "packages/qa": {
+      "name": "@otter/qa",
+      "version": "0.0.0",
+    },
   },
   "trustedDependencies": [
     "@ast-grep/cli",
@@ -32,6 +36,8 @@
     "@ast-grep/cli-win32-ia32-msvc": ["@ast-grep/cli-win32-ia32-msvc@0.42.0", "", { "os": "win32", "cpu": "ia32" }, "sha512-1+C4AxOopWz4meWtReElN1HqyPNhTWjxO0Th3GJsIq3QiCouih6sS52dkbyTjWnss5SdLeHUpHSvXa2V+87teA=="],
 
     "@ast-grep/cli-win32-x64-msvc": ["@ast-grep/cli-win32-x64-msvc@0.42.0", "", { "os": "win32", "cpu": "x64" }, "sha512-Nn3nSr/viSJUWTrH7JmOHl0kBs/1XksUq4awkCaz5JEx7O6aiQhjxqiSp1KkuwJ9WWdjE7D6meYIYkoqJyvQ/w=="],
+
+    "@otter/qa": ["@otter/qa@workspace:packages/qa"],
 
     "@oxfmt/binding-android-arm-eabi": ["@oxfmt/binding-android-arm-eabi@0.43.0", "", { "os": "android", "cpu": "arm" }, "sha512-CgU2s+/9hHZgo0IxVxrbMPrMj+tJ6VM3mD7Mr/4oiz4FNTISLoCvRmB5nk4wAAle045RtRjd86m673jwPyb1OQ=="],
 
