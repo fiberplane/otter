@@ -70,14 +70,17 @@ path so `drift link` can bind the scenario to that target. For example:
 The CLI structure comes from @./docs/templates/cli.md.
 ```
 
-After adding or changing scenarios, run:
+After adding or changing scenarios, refresh the lockfile and verify:
 
 ```bash
-drift link packages/qa/scenarios/<scenario>.md <target-path>
+drift link packages/qa/scenarios/<scenario>.md
 drift check
 ```
 
-If the linked template or code changes later, `drift check` flags the scenario for review.
+`drift link <doc>` walks the doc, picks up every inline `@./` reference, and stamps them in
+`drift.lock`. No explicit target argument is needed for inline references — that is what makes
+anchoring invisible to the reader. If a linked template or source file changes later, `drift check`
+flags the scenario for review.
 
 ## Helpers
 
@@ -89,8 +92,9 @@ Helpers are markdown procedures, not executable scripts. A helper should include
 - Outputs
 - Cleanup or rollback notes
 
-Reference helpers by name in `depends-on`. Keep reusable setup in helpers so scenarios stay focused
-on product behavior.
+Copy `helpers/_template.md` to a new filename without the `_` prefix to start a new helper.
+Reference helpers in `depends-on` by their filename without the `.md` extension. Keep reusable setup
+in helpers so scenarios stay focused on product behavior.
 
 ## Results
 

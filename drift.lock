@@ -3,7 +3,7 @@ version = 1
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/README.md"
-sig = "4fa57fe0d3106f95"
+sig = "3f1c6511af4bbb7c"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
@@ -43,7 +43,7 @@ sig = "1924c1dbdc649395"
 [[bindings]]
 doc = "docs/testing/qa.md"
 target = "packages/qa/README.md"
-sig = "4fa57fe0d3106f95"
+sig = "3f1c6511af4bbb7c"
 
 [[bindings]]
 doc = "packages/qa/scenarios/_example-api.md"
