@@ -1,0 +1,61 @@
+version = 1
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/README.md"
+sig = "4fa57fe0d3106f95"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/helpers/_example-bootstrap-env.md"
+sig = "f6116370d5364d25"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/helpers/_example-cleanup.md"
+sig = "f5128490c6e5fff1"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/helpers/_example-setup-test-dir.md"
+sig = "4ca0dccdcc52cadf"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/scenarios/_example-api.md"
+sig = "7d838f74d38d8b8c"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/scenarios/_example-cli.md"
+sig = "b7a57df8fc81d6c7"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/scenarios/_example-worker.md"
+sig = "9b0f86817b651f3a"
+
+[[bindings]]
+doc = "docs/proposals/completed/packages-qa.md"
+target = "packages/qa/scenarios/_template.md"
+sig = "1924c1dbdc649395"
+
+[[bindings]]
+doc = "docs/testing/qa.md"
+target = "packages/qa/README.md"
+sig = "4fa57fe0d3106f95"
+
+[[bindings]]
+doc = "packages/qa/scenarios/_example-api.md"
+target = "docs/templates/api.md"
+sig = "db562e0c4d6890e5"
+
+[[bindings]]
+doc = "packages/qa/scenarios/_example-cli.md"
+target = "docs/templates/cli.md"
+sig = "1d78e71995833ed4"
+
+[[bindings]]
+doc = "packages/qa/scenarios/_example-worker.md"
+target = "docs/templates/worker.md"
+sig = "7140b1c1a30afbec"

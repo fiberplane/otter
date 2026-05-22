@@ -6,17 +6,17 @@ System of record for the repository. AGENTS.md is the map, this directory is the
 
 ### What goes where
 
-| Location             | Contains                                                                 | Examples                                           |
-| -------------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
-| `AGENTS.md`          | Map: apps, commands, pointers into docs/                                 | "For Effect patterns, see docs/patterns/effect.md" |
-| `docs/patterns/`     | How we write code in this repo. Conventions, rules, idioms.              | Effect usage, coding style, observability setup    |
-| `docs/templates/`    | How to build things. Specs for software components.                      | Effect CLI setup, API service scaffold             |
-| `docs/architecture/` | What the system looks like. Domain boundaries, data flow, key decisions. | Service architecture, data models                  |
-| `docs/proposals/active/` | What we are planning to change. Design docs with status and rationale. | New app scaffolds, orchestration flows             |
-| `docs/proposals/completed/` | Proposals that shipped. Kept for historical context.               | Accepted designs after implementation             |
-| `docs/experiments/`  | Feasibility notes and demo evidence that are not yet product decisions.  | Prototype results, spike findings                  |
-| `docs/testing/`      | How we validate behavior. Test infrastructure and QA scenarios.          | Property tests, integration test notes             |
-| `docs/graveyard/`    | Retired docs for features or decisions that no longer describe the repo. | Removed prototypes, superseded designs             |
+| Location                    | Contains                                                                 | Examples                                           |
+| --------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
+| `AGENTS.md`                 | Map: apps, commands, pointers into docs/                                 | "For Effect patterns, see docs/patterns/effect.md" |
+| `docs/patterns/`            | How we write code in this repo. Conventions, rules, idioms.              | Effect usage, coding style, observability setup    |
+| `docs/templates/`           | How to build things. Specs for software components.                      | Effect CLI setup, API service scaffold             |
+| `docs/architecture/`        | What the system looks like. Domain boundaries, data flow, key decisions. | Service architecture, data models                  |
+| `docs/proposals/active/`    | What we are planning to change. Design docs with status and rationale.   | New app scaffolds, orchestration flows             |
+| `docs/proposals/completed/` | Proposals that shipped. Kept for historical context.                     | Accepted designs after implementation              |
+| `docs/experiments/`         | Feasibility notes and demo evidence that are not yet product decisions.  | Prototype results, spike findings                  |
+| `docs/testing/`             | How we validate behavior. Test infrastructure and QA scenarios.          | QA scenario guide, integration test notes          |
+| `docs/graveyard/`           | Retired docs for features or decisions that no longer describe the repo. | Removed prototypes, superseded designs             |
 
 ### docs/ vs skills
 
@@ -87,13 +87,13 @@ Docs rot when they describe code that changed. To mitigate:
 
 ### patterns/
 
-| Doc                                           | Topic                                                      |
-| --------------------------------------------- | ---------------------------------------------------------- |
-| [effect.md](patterns/effect.md)               | Effect conventions, service architecture, code smells      |
-| [boundaries.md](patterns/boundaries.md)       | Boundary convention: adapters, entry points, interior code |
-| [coding-style.md](patterns/coding-style.md)   | TypeScript coding style, early returns, type safety        |
+| Doc                                               | Topic                                                      |
+| ------------------------------------------------- | ---------------------------------------------------------- |
+| [effect.md](patterns/effect.md)                   | Effect conventions, service architecture, code smells      |
+| [boundaries.md](patterns/boundaries.md)           | Boundary convention: adapters, entry points, interior code |
+| [coding-style.md](patterns/coding-style.md)       | TypeScript coding style, early returns, type safety        |
 | [data-validation.md](patterns/data-validation.md) | Schema-first validation at boundaries, anti-patterns       |
-| [observability.md](patterns/observability.md) | Effect + OpenTelemetry tracing and logging setup           |
+| [observability.md](patterns/observability.md)     | Effect + OpenTelemetry tracing and logging setup           |
 
 ### templates/
 
@@ -110,7 +110,8 @@ Architecture notes are added as apps and packages are built. This directory star
 ### proposals/
 
 - `active/` -- In-progress design docs
-- `completed/` -- Shipped designs kept for historical context
+- `completed/` -- Shipped designs kept for historical context, including
+  [packages-qa.md](proposals/completed/packages-qa.md)
 
 ### experiments/
 
@@ -118,7 +119,9 @@ Feasibility notes and demo evidence live here until they graduate into proposals
 
 ### testing/
 
-Validation patterns, test infrastructure notes, and QA scenario indexes live here.
+| Doc                    | Topic                                                     |
+| ---------------------- | --------------------------------------------------------- |
+| [qa.md](testing/qa.md) | When to write prose-first QA scenarios with `packages/qa` |
 
 ### graveyard/
 

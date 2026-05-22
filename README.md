@@ -46,10 +46,20 @@ Start your coding agent in this repo and start building. See `AGENTS.md` for the
 ```
 apps/           Deployable applications (CLIs, APIs, workers)
 packages/       Internal shared packages
+packages/qa/    Prose-first QA scenarios, helpers, and local run results
 docs/           Conventions, templates, architecture notes, proposals, experiments
 rules/          ast-grep lint rules (shared + Effect-specific)
 .fp/extensions/ fp lifecycle extensions
 ```
+
+## QA scenarios
+
+`packages/qa` provides a prose-first scenario surface for validating scaffolded CLIs, APIs, workers,
+and browser-visible flows. Scenarios are markdown files with small YAML frontmatter, reusable helper
+docs, gitignored local results, and inline drift references to the templates or code they exercise.
+
+Start with `packages/qa/README.md` for the authoring guide and examples, and
+`docs/testing/qa.md` for when to use QA scenarios versus code-level tests.
 
 ## ast-grep rules
 
