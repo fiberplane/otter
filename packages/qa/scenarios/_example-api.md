@@ -2,7 +2,6 @@
 name: Example API template smoke scenario
 requires:
   - bun
-  - curl
 depends-on:
   - _example-setup-test-dir
   - _example-bootstrap-env
@@ -24,8 +23,9 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
 - The runner has read `docs/templates/api.md`.
 - `_example-setup-test-dir` has created an isolated workspace.
-- `_example-bootstrap-env` has prepared any local env vars required by the scaffold.
-- `bun` and `curl` are available.
+- `_example-bootstrap-env` has prepared any env vars or ports listed by the consumer scenario.
+- `bun` is available.
+- `curl` or another HTTP client is available if the optional route exercise will run.
 
 ## Steps
 
@@ -70,5 +70,5 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
 ## Cleanup
 
-- Stop the local API process.
+- Stop the local API process if one was started.
 - Run `_example-cleanup` to remove the isolated workspace and temporary files.

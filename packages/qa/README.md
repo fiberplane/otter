@@ -3,9 +3,9 @@
 Prose-first QA scenarios for apps scaffolded from this repo.
 
 This package intentionally contains no runner, fixtures, source code, or assertion library. A QA
-scenario is a markdown file with small YAML frontmatter, readable steps, and links to the template
-or code it exercises. Humans can run the scenarios manually, and agents can execute them by reading
-the same prose.
+scenario is a markdown file with small YAML frontmatter, readable steps, and prose references to the
+template or code it exercises. Humans can run the scenarios manually, and agents can follow them by
+reading the same prose.
 
 The `_template.md` and `_example-*.md` files are not baseline tests. They are copyable examples for
 new projects. Delete or rewrite them when a consumer adds real product scenarios.
@@ -94,7 +94,8 @@ Helpers are markdown procedures, not executable scripts. A helper should include
 - Cleanup or rollback notes
 
 Copy `helpers/_template.md` to a new filename without the `_` prefix to start a new helper.
-Reference helpers in `depends-on` by their filename without the `.md` extension. Keep reusable setup
+Reference prerequisite helpers in `depends-on` by their filename without the `.md` extension.
+Reference cleanup helpers from the scenario's `## Cleanup` section. Keep reusable setup and cleanup
 in helpers so scenarios stay focused on product behavior.
 
 ## Results

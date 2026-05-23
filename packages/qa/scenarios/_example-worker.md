@@ -2,13 +2,11 @@
 name: Example worker template smoke scenario
 requires:
   - bun
-  - agent-browser
 depends-on:
   - _example-setup-test-dir
   - _example-bootstrap-env
 tags:
   - worker
-  - browser
 ---
 
 # Example Worker Template Smoke Scenario
@@ -26,9 +24,9 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
 - The runner has read `docs/templates/worker.md`.
 - `_example-setup-test-dir` has created an isolated workspace.
-- `_example-bootstrap-env` has prepared local env vars and ports.
+- `_example-bootstrap-env` has prepared any env vars or ports listed by the consumer scenario.
 - `bun` is available.
-- `agent-browser` is available when the worker serves a UI.
+- `agent-browser` is available if the optional browser-visible output step will run.
 
 ## Steps
 
