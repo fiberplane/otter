@@ -39,17 +39,17 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
    **Verify:** Compare the generated tree to `docs/templates/api.md`.
 
-2. Start the API locally.
+2. If runnable app details exist, start the API locally.
 
-   **Action:** Start the API using the local command chosen for the generated app, on an unused local
-   port.
+   **Action:** If the generated app includes a chosen HTTP framework, route implementation, and local
+   start command, start it on an unused local port.
 
    **Expected:** The process starts without errors and is ready to receive HTTP requests on the
    selected local port.
 
    **Verify:** Save the startup command, port, and logs in `packages/qa/results/`.
 
-3. Exercise a route.
+3. If a route exists, exercise it.
 
    **Action:** Send an HTTP request to a generated route group, such as the health route if the
    scaffold implemented one.
@@ -59,7 +59,7 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
    **Verify:** Capture the full request and response, including status, headers, and body.
 
-4. Exercise an error response.
+4. If error handling exists, exercise an error response.
 
    **Action:** Send a request that triggers a scaffolded validation or not-found error.
 

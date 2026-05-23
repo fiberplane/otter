@@ -23,7 +23,7 @@ sig = "4ca0dccdcc52cadf"
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/scenarios/_example-api.md"
-sig = "27168259defc39cf"
+sig = "328626ede8f7f8ca"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
@@ -33,7 +33,7 @@ sig = "8798778348fddff9"
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/scenarios/_example-worker.md"
-sig = "52ab831a4008c1ee"
+sig = "6bb30c5f8693985b"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"

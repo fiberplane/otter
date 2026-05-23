@@ -42,7 +42,7 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
    **Verify:** Compare the generated tree to `docs/templates/worker.md`.
 
-2. Start the worker.
+2. If runnable worker details exist, start the worker.
 
    **Action:** Start the worker using the local command and queue setup chosen for the generated app.
 
@@ -51,7 +51,7 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
    **Verify:** Save startup logs and the process command in `packages/qa/results/`.
 
-3. Process a message.
+3. If message details exist, process a message.
 
    **Action:** Use the consumer scenario's documented message shape and enqueue mechanism.
 
@@ -69,9 +69,9 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
    **Verify:** Save a screenshot or browser observation notes in `packages/qa/results/`.
 
-5. Stop the worker.
+5. If a worker process was started, stop it.
 
-   **Action:** Send the normal shutdown signal.
+   **Action:** Send the app's normal shutdown signal.
 
    **Expected:** Scoped resources finalize and the process exits cleanly.
 
