@@ -31,6 +31,23 @@ Skills live in two places:
 
 Overlap rule: if a pattern describes our codebase (our Effect conventions, our ast-grep rules), it belongs in docs/. If it teaches a technique for working on this codebase (how to run codemods here), it belongs in `.agents/skills/`. If it's a general technique (how ast-grep works), it belongs in a user-level skill outside the repo.
 
+### Skill directory layout
+
+`.agents/skills/` is the canonical home for repo-versioned skills. Claude Code looks under `.claude/skills/` instead, so each skill directory under `.agents/skills/` is mirrored as a symlink from `.claude/skills/`:
+
+```
+.agents/skills/drift/        # canonical
+.claude/skills/drift -> ../../.agents/skills/drift   # symlink for Claude Code
+```
+
+Edit the canonical copy under `.agents/skills/`; the symlink keeps Claude Code in sync automatically. This layout means the same skill works under Claude Code and under more standardized agent setups (Codex and others) that read `.agents/skills/` directly, without duplicating files or losing version control on either side.
+
+When adding a new skill, create it under `.agents/skills/<name>/` and then add the symlink:
+
+```bash
+ln -s ../../.agents/skills/<name> .claude/skills/<name>
+```
+
 ### docs/ vs app READMEs
 
 App READMEs answer "how do I get this running." They contain:
