@@ -44,7 +44,7 @@ Fields:
 | ------------ | -------- | ------------------------------------------------------------------------- |
 | `name`       | yes      | Human-readable scenario name                                              |
 | `requires`   | no       | Tools, services, env vars, or credentials needed before the scenario runs |
-| `depends-on` | no       | Helper names or scenario names that must run first                        |
+| `depends-on` | no       | Prerequisite helper names that must run before the scenario               |
 | `tags`       | no       | Filtering labels such as `cli`, `api`, `worker`, or `browser`             |
 
 Do not add a `drift-anchors` field. Drift bindings live in `drift.lock`; plain prose references do
@@ -117,9 +117,6 @@ introducing per-scenario browser tooling. For a web app, name the URL to open an
 to verify. For an already-running Electron app with Chrome DevTools Protocol enabled, include the
 CDP port, for example `agent-browser connect 9222`. If a consuming environment has an
 Electron-specific skill, that skill can wrap the same CDP-driven flow.
-
-The worker example includes an optional browser-verification step for workers that expose
-browser-visible output.
 
 ## Running Scenarios
 

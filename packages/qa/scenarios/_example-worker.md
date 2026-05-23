@@ -17,7 +17,6 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
 - Confirm a worker app authored from the worker template has the expected structure.
 - If the consumer supplies runnable worker details, smoke-test message handling and shutdown.
-- Demonstrate browser-driven verification for workers that also expose browser-visible output.
 - Keep the scenario tied to `docs/templates/worker.md` so template changes prompt QA review.
 
 ## Prerequisites
@@ -26,7 +25,6 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 - `_example-setup-test-dir` has created an isolated workspace.
 - `_example-bootstrap-env` has prepared any env vars or ports listed by the consumer scenario.
 - `bun` is available.
-- `agent-browser` is available if the optional browser-visible output step will run.
 
 ## Steps
 
@@ -58,16 +56,7 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
    **Verify:** Capture logs or state proving the handler ran according to
    `docs/templates/worker.md`.
 
-4. Inspect optional browser-visible output.
-
-   **Action:** If the worker serves HTML, open the local status URL with `agent-browser`. If testing
-   an already-running Electron shell, connect to its CDP port with `agent-browser connect 9222`.
-
-   **Expected:** The page shows the worker-visible status implemented by the scaffold.
-
-   **Verify:** Save a screenshot or browser observation notes in `packages/qa/results/`.
-
-5. If a worker process was started, stop it.
+4. If a worker process was started, stop it.
 
    **Action:** Send the app's normal shutdown signal.
 
@@ -77,5 +66,5 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
 ## Cleanup
 
-- Stop any remaining worker or browser processes.
+- Stop any remaining worker processes.
 - Run `_example-cleanup` to remove the isolated workspace and temporary files.

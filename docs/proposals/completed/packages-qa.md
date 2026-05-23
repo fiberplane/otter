@@ -16,8 +16,9 @@ A prose-first scenario model — markdown files with small YAML frontmatter, reu
 
 - Prose-first scenarios are readable by humans and structured enough for agents to follow.
 - No framework to learn, no fixtures to maintain.
-- Frontmatter (`name`, `requires`, `depends-on`, `tags`) gives just enough structure for dependency ordering and helper resolution.
-- Drift anchors tie scenario prose to the code it exercises, so target changes flag scenarios for review.
+- Frontmatter (`name`, `requires`, `depends-on`, `tags`) gives just enough structure for helper resolution and filtering.
+- Explicit drift bindings in `drift.lock` tie scenario prose to the code it exercises, so target
+  changes flag scenarios for review.
 
 ### Package name
 
@@ -36,7 +37,7 @@ drop ships prose-only and leaves room for `src/` to appear later.
 
 3. **Small starter set mirroring `docs/templates/`.** Otter ships three app templates today — [`docs/templates/cli.md`](../../templates/cli.md), [`docs/templates/api.md`](../../templates/api.md), [`docs/templates/worker.md`](../../templates/worker.md). The example scenarios target those one-for-one so anyone scaffolding from otter has an adaptable model for the app they just generated. All example files use the `_example-` prefix to mark them as illustrative and meant to be deleted or replaced when the consumer writes real scenarios.
 
-4. **Browser and Electron flows documented.** Otter can use the `agent-browser` skill for browser-visible flows, including already-running Electron apps that expose a Chrome DevTools Protocol port. Scenarios that need UI interaction describe the actions in prose and instruct the runner to use `agent-browser` (e.g., `agent-browser connect 9222`) rather than introducing per-scenario browser tooling. The worker example demonstrates the pattern.
+4. **Browser and Electron flows documented.** Otter can use the `agent-browser` skill for browser-visible flows, including already-running Electron apps that expose a Chrome DevTools Protocol port. Scenarios that need UI interaction describe the actions in prose and instruct the runner to use `agent-browser` (e.g., `agent-browser connect 9222`) rather than introducing per-scenario browser tooling.
 
 ### Package shape
 
@@ -49,7 +50,7 @@ packages/qa/
     _template.md                     # copy-this starter (NOT a real scenario)
     _example-cli.md                  # EXAMPLE: targets docs/templates/cli.md — delete or replace
     _example-api.md                  # EXAMPLE: targets docs/templates/api.md — delete or replace
-    _example-worker.md               # EXAMPLE: targets docs/templates/worker.md, demonstrates agent-browser — delete or replace
+    _example-worker.md               # EXAMPLE: targets docs/templates/worker.md — delete or replace
   helpers/
     _template.md                     # copy-this helper starter
     _example-setup-test-dir.md       # EXAMPLE helper — delete or replace
@@ -69,7 +70,7 @@ Everything under `scenarios/` and `helpers/` that starts with `_` is _not_ a sce
 - **Scenario template structure.** Frontmatter → Goals → Prerequisites → numbered Steps (each with **Action**, **Expected**, **Verify**) → Cleanup. The heading vocabulary is fixed up-front in the template, so authors do not drift.
 - **Examples track the real app templates.** Each `_example-*.md` scenario mentions its `docs/templates/<which>.md` target in prose and is bound to that target in `drift.lock`, so `drift check` fails when those templates change. The examples earn their keep by exercising drift end-to-end.
 - **Results stay gitignored.** Local run artifacts (logs, screenshots, transcripts) live under `packages/qa/results/`, gitignored except `.gitkeep`.
-- **Browser / Electron testing uses `agent-browser`.** The README points scenario authors at the available `agent-browser` skill rather than baking a UI driver into the qa package. The `_example-worker.md` scenario shows how to use `agent-browser` when a worker scaffold exposes browser-visible output, demonstrating the calling pattern without needing a dedicated browser example.
+- **Browser / Electron testing uses `agent-browser`.** The README points scenario authors at the available `agent-browser` skill rather than baking a UI driver into the qa package.
 
 ### What this proposal deliberately does _not_ do
 
@@ -81,7 +82,8 @@ Everything under `scenarios/` and `helpers/` that starts with `_` is _not_ a sce
 
 1. **Land the skeleton.** Create `packages/qa/` with `README.md`, `package.json`, `scenarios/_template.md`, `helpers/_template.md`, `results/.gitkeep`, `.gitignore`. Wire `docs/testing/qa.md` and update the index tables in `AGENTS.md` / `docs/README.md`.
 2. **Add the three `_example-*` scenarios.** One per template (cli, api, worker). Each is bound to `docs/templates/*` so drift catches template drift.
-3. **Add the three `_example-*` helpers.** `setup-test-dir`, `bootstrap-env`, `cleanup`.
+3. **Add the three `_example-*` helpers.** `_example-setup-test-dir`, `_example-bootstrap-env`,
+   `_example-cleanup`.
 4. **Stamp drift bindings.** Run `drift link <scenario> <target>` for each
    scenario/template binding, then verify `drift check` is clean.
 
