@@ -107,7 +107,7 @@ Manages parent/child issue lifecycle automatically.
 
 Gates the done transition on passing checks.
 
-Runs `bun run check` (ast-grep + drift + typecheck) before allowing an issue to move to done. Configurable via `.fp/config.toml`:
+Runs `bun run check` (oxlint + ast-grep + drift + typecheck) before allowing an issue to move to done. Configurable via `.fp/config.toml`:
 
 ```toml
 [extensions.check-before-done]

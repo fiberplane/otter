@@ -16,7 +16,8 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
 ## Goals
 
-- Confirm an app scaffolded from the API template starts and serves one scaffolded route.
+- Confirm an API app authored from the API template has the expected structure.
+- If the consumer supplies runnable app details, smoke-test one documented route.
 - Keep the scenario tied to `docs/templates/api.md` so template changes prompt QA review.
 
 ## Prerequisites
@@ -40,18 +41,21 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
 2. Start the API locally.
 
-   **Action:** Run the scaffolded app's API development command on an unused local port.
+   **Action:** Start the API using the local command chosen for the generated app, on an unused local
+   port.
 
-   **Expected:** The process reaches the scaffold's documented local ready state.
+   **Expected:** The process starts without errors and is ready to receive HTTP requests on the
+   selected local port.
 
    **Verify:** Save the startup command, port, and logs in `packages/qa/results/`.
 
 3. Exercise a route.
 
-   **Action:** Send an HTTP request to a route implemented by the scaffold, such as the health
-   route described by the template's project structure.
+   **Action:** Send an HTTP request to a generated route group, such as the health route if the
+   scaffold implemented one.
 
-   **Expected:** The route returns the success status and response body implemented by the scaffold.
+   **Expected:** The route returns the status and response body defined by the generated app's route
+   code.
 
    **Verify:** Capture the full request and response, including status, headers, and body.
 

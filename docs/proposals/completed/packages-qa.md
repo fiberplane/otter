@@ -17,18 +17,20 @@ A prose-first scenario model — markdown files with small YAML frontmatter, reu
 - Prose-first scenarios are readable by humans and structured enough for agents to follow.
 - No framework to learn, no fixtures to maintain.
 - Frontmatter (`name`, `requires`, `depends-on`, `tags`) gives just enough structure for dependency ordering and helper resolution.
-- Drift anchors tie scenario prose to the code it exercises, so scenarios stay honest.
+- Drift anchors tie scenario prose to the code it exercises, so target changes flag scenarios for review.
 
 ### Package name
 
-The package is named `packages/qa` so programmatic siblings can be added later — a runner, an agent-driven executor — without renaming the package. The initial drop ships prose-only and leaves room for `src/` to appear later.
+The workspace lives at `packages/qa` and the package is named `@otter/qa`, so programmatic siblings
+can be added later — a runner, an agent-driven executor — without renaming the package. The initial
+drop ships prose-only and leaves room for `src/` to appear later.
 
 ### Improvements baked in from day one
 
 1. **Formal authoring guide and copyable templates.** A `_template.md` for scenarios and a `_template.md` for helpers (both prefixed `_` so they sort first and are clearly not real artifacts). The frontmatter schema is documented explicitly in the package README.
 
 2. **Lean on otter's existing conventions instead of reinventing them.**
-   - Drift is already a first-class skill in otter (see [`.agents/skills/drift/SKILL.md`](../../../.agents/skills/drift/SKILL.md)). Scenario→code anchoring is a stated expectation. Bindings are explicit: run `drift link <scenario> <target>` to stamp the relationship in `drift.lock`. Scenario prose can still mention the target path for reader context, but the lockfile binding is what drift checks.
+   - Drift is already a first-class skill in otter (see [`.agents/skills/drift/SKILL.md`](../../../.agents/skills/drift/SKILL.md)). Scenario→code anchoring is a stated expectation. Bindings are explicit: run `drift link <scenario> <target>` to stamp the relationship in `drift.lock`. Scenario prose can still mention the target path for reader context; explicit lockfile bindings are what drift freshness-checks. Relative markdown links are checked only for existence.
    - Otter's [`docs/testing/`](../../testing/) slot gets an index page at `docs/testing/qa.md` explaining _when_ to write a scenario, linking out to `packages/qa/README.md` for the _how_.
    - [`AGENTS.md`](../../../AGENTS.md) and [`docs/README.md`](../../README.md) tables get a QA scenarios entry.
 
@@ -72,7 +74,7 @@ Everything under `scenarios/` and `helpers/` that starts with `_` is _not_ a sce
 ### What this proposal deliberately does _not_ do
 
 - No scenario runner, no DSL, no assertion library, no QA source or runtime TypeScript at first land — the template ships prose-only. The package shape leaves room for `src/` to appear later without re-org.
-- No Effect-TS patterns inside `packages/qa` (it is not a code package _yet_), so the ast-grep rules do not apply and there is nothing for them to enforce.
+- No Effect-TS code inside `packages/qa` yet, so ast-grep has nothing to enforce there. If TypeScript source is added later, repo ast-grep rules will scan it unless the package is explicitly excluded.
 - No `drift-anchors` YAML field. Anchoring stays in `drift.lock`; the frontmatter does not grow.
 
 ## Phases
@@ -89,4 +91,4 @@ Each phase is independently mergeable; phase 1 already provides a usable surface
 
 1. **Examples target `docs/templates/`** (cli, api, worker) one-for-one, with explicit drift bindings so drift catches template drift.
 2. **No `drift-anchors` frontmatter field** — anchors are handled by `drift.lock`. Drift runs unchanged.
-3. **`packages/qa`** — chosen, leaving room for programmatic additions (runner, agent-driven executor) under the same package later.
+3. **`packages/qa` / `@otter/qa`** — chosen, leaving room for programmatic additions (runner, agent-driven executor) under the same package later.

@@ -40,8 +40,8 @@ bun run lint:ast                  # ast-grep scan (custom rules)
 bun run lint:drift                # drift lint (stale spec check)
 bun run format                    # oxfmt
 bun run typecheck                 # tsgo --noEmit
-bun run check                     # all of the above
-bun run test                      # Tests (all workspaces)
+bun run check                     # lint + ast-grep + drift + typecheck
+bun run test                      # Run workspace test scripts when present
 EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 ```
 
@@ -71,7 +71,7 @@ EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 - **oxfmt** — Config in `.oxfmtrc.json`. 2-space indent, 100-char lines, double quotes, import sorting.
 - **tsgo** — TypeScript native compiler (preview). Uses root `tsconfig.json`.
 - **ast-grep** — Custom rules in `rules/`. These enforce the architectural patterns described above — see `docs/patterns/effect.md` for the full rule table.
-- **drift** — Binds specs in `docs/` to source files. `drift lint` flags stale specs, `drift link <spec>` re-stamps.
+- **drift** — Binds markdown docs and scenarios to source files or templates. `drift lint` flags stale specs, `drift link <spec>` re-stamps.
 
 **After writing any code**, run `bun run check`.
 

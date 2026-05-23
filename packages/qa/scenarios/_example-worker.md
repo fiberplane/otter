@@ -17,8 +17,9 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
 ## Goals
 
-- Confirm an app scaffolded from the worker template processes a message and shuts down cleanly.
-- Demonstrate browser-driven verification for workers that also expose an HTML status page.
+- Confirm a worker app authored from the worker template has the expected structure.
+- If the consumer supplies runnable worker details, smoke-test message handling and shutdown.
+- Demonstrate browser-driven verification for workers that also expose browser-visible output.
 - Keep the scenario tied to `docs/templates/worker.md` so template changes prompt QA review.
 
 ## Prerequisites
@@ -43,18 +44,18 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
 2. Start the worker.
 
-   **Action:** Run the worker development command with local queue settings.
+   **Action:** Start the worker using the local command and queue setup chosen for the generated app.
 
-   **Expected:** The process reaches the scaffold's documented local ready state.
+   **Expected:** The process starts without errors; logs or process state show it is ready for local
+   messages.
 
    **Verify:** Save startup logs and the process command in `packages/qa/results/`.
 
 3. Process a message.
 
-   **Action:** Enqueue or otherwise provide one sample message to the worker.
+   **Action:** Use the consumer scenario's documented message shape and enqueue mechanism.
 
-   **Expected:** The worker handles the message, acknowledges success, and records any expected side
-   effects.
+   **Expected:** The worker handles the message and records the documented logs or state changes.
 
    **Verify:** Capture logs or state proving the handler ran according to
    `docs/templates/worker.md`.
