@@ -17,11 +17,11 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 ## Goals
 
 - Confirm an app scaffolded from the API template starts and serves a basic route.
-- Keep the scenario tied to @./docs/templates/api.md so template changes prompt QA review.
+- Keep the scenario tied to `docs/templates/api.md` so template changes prompt QA review.
 
 ## Prerequisites
 
-- The runner has read @./docs/templates/api.md.
+- The runner has read `docs/templates/api.md`.
 - `_example-setup-test-dir` has created an isolated workspace.
 - `_example-bootstrap-env` has prepared any local env vars required by the scaffold.
 - `bun` and `curl` are available.
@@ -36,7 +36,7 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
    **Expected:** The app includes a boundary entry point, route files, service definitions, layers,
    tagged errors, and adapter files.
 
-   **Verify:** Compare the generated tree to @./docs/templates/api.md.
+   **Verify:** Compare the generated tree to `docs/templates/api.md`.
 
 2. Start the API locally.
 
@@ -61,7 +61,7 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
    **Expected:** The boundary maps the tagged error to the documented HTTP status.
 
    **Verify:** Capture the response and compare it with the error-response guidance in
-   @./docs/templates/api.md.
+   `docs/templates/api.md`.
 
 ## Cleanup
 

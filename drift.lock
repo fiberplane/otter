@@ -3,7 +3,7 @@ version = 1
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/README.md"
-sig = "3f1c6511af4bbb7c"
+sig = "4f57ba5fb70d2c85"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
@@ -23,27 +23,27 @@ sig = "4ca0dccdcc52cadf"
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/scenarios/_example-api.md"
-sig = "7d838f74d38d8b8c"
+sig = "cc37dd3f48691104"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/scenarios/_example-cli.md"
-sig = "b7a57df8fc81d6c7"
+sig = "8798778348fddff9"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/scenarios/_example-worker.md"
-sig = "9b0f86817b651f3a"
+sig = "493e068a9a9a47bc"
 
 [[bindings]]
 doc = "docs/proposals/completed/packages-qa.md"
 target = "packages/qa/scenarios/_template.md"
-sig = "1924c1dbdc649395"
+sig = "3712f9f638d32eae"
 
 [[bindings]]
 doc = "docs/testing/qa.md"
 target = "packages/qa/README.md"
-sig = "3f1c6511af4bbb7c"
+sig = "4f57ba5fb70d2c85"
 
 [[bindings]]
 doc = "packages/qa/scenarios/_example-api.md"

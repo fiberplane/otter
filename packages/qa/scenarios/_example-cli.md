@@ -15,11 +15,11 @@ This is an example scenario. Delete or replace it when real CLI scenarios exist.
 ## Goals
 
 - Confirm an app scaffolded from the CLI template has the expected command structure.
-- Keep the scenario tied to @./docs/templates/cli.md so template changes prompt QA review.
+- Keep the scenario tied to `docs/templates/cli.md` so template changes prompt QA review.
 
 ## Prerequisites
 
-- The runner has read @./docs/templates/cli.md.
+- The runner has read `docs/templates/cli.md`.
 - `_example-setup-test-dir` has created an isolated workspace.
 - `bun` is available.
 
@@ -34,7 +34,7 @@ This is an example scenario. Delete or replace it when real CLI scenarios exist.
    and at least one file under `src/commands/`.
 
    **Verify:** List the app directory and compare it to the project structure in
-   @./docs/templates/cli.md.
+   `docs/templates/cli.md`.
 
 2. Run the development command.
 

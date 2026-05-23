@@ -19,11 +19,11 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
 - Confirm an app scaffolded from the worker template processes a message and shuts down cleanly.
 - Demonstrate browser-driven verification for workers that also expose an HTML status page.
-- Keep the scenario tied to @./docs/templates/worker.md so template changes prompt QA review.
+- Keep the scenario tied to `docs/templates/worker.md` so template changes prompt QA review.
 
 ## Prerequisites
 
-- The runner has read @./docs/templates/worker.md.
+- The runner has read `docs/templates/worker.md`.
 - `_example-setup-test-dir` has created an isolated workspace.
 - `_example-bootstrap-env` has prepared local env vars and ports.
 - `bun` is available.
@@ -39,7 +39,7 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
    **Expected:** The app includes `src/worker.ts`, handlers, service definitions, layers, tagged
    errors, and queue adapters.
 
-   **Verify:** Compare the generated tree to @./docs/templates/worker.md.
+   **Verify:** Compare the generated tree to `docs/templates/worker.md`.
 
 2. Start the worker.
 
@@ -56,7 +56,8 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
    **Expected:** The worker handles the message, acknowledges success, and records any expected side
    effects.
 
-   **Verify:** Capture logs or state proving the handler ran according to @./docs/templates/worker.md.
+   **Verify:** Capture logs or state proving the handler ran according to
+   `docs/templates/worker.md`.
 
 4. Inspect the optional status UI.
 

@@ -28,7 +28,7 @@ The package is named `packages/qa` (not `packages/qa-scenarios` or similar) so p
 1. **Formal authoring guide and copyable templates.** A `_template.md` for scenarios and a `_template.md` for helpers (both prefixed `_` so they sort first and are clearly not real artifacts). The frontmatter schema is documented explicitly in the package README.
 
 2. **Lean on otter's existing conventions instead of reinventing them.**
-   - Drift is already a first-class skill in otter (see [`.agents/skills/drift/SKILL.md`](../../../.agents/skills/drift/SKILL.md)). Scenario→code anchoring is a stated expectation. **Inline `@./` references in scenario prose** are picked up by `drift link` automatically and stamped in `drift.lock`. Anchors stay _invisible_ in the reading experience: no extra YAML field, no special syntax, just a path reference in normal prose that drift treats as a binding.
+   - Drift is already a first-class skill in otter (see [`.agents/skills/drift/SKILL.md`](../../../.agents/skills/drift/SKILL.md)). Scenario→code anchoring is a stated expectation. Bindings are explicit: run `drift link <scenario> <target>` to stamp the relationship in `drift.lock`. Scenario prose can still mention the target path for reader context, but the lockfile binding is what drift checks.
    - Otter's [`docs/testing/`](../../testing/) slot gets an index page at `docs/testing/qa.md` explaining _when_ to write a scenario, linking out to `packages/qa/README.md` for the _how_.
    - [`AGENTS.md`](../../../AGENTS.md) and [`docs/README.md`](../../README.md) tables get a QA scenarios entry.
 
@@ -63,9 +63,9 @@ Everything under `scenarios/` and `helpers/` that starts with `_` is _not_ a sce
 ### Key design calls
 
 - **`package.json` is minimal and present.** Otter's workspace pattern (`bun run --filter '*' ...`) expects every entry under `packages/` to be a package. A bare `{ "name": "@otter/qa", "private": true, "version": "0.0.0" }` keeps the workspace happy without inviting source code _yet_. When a runner or agent-driven executor is added later, `src/` slots in under the same package name without disturbing the scenario authoring surface.
-- **Frontmatter schema, documented once.** `name`, `requires`, `depends-on`, plus `tags` for filtering (`cli`, `api`, `worker`, `browser`). **No `drift-anchors` field** — drift anchoring is invisible, handled via inline `@./` references in the scenario prose. The frontmatter stays small.
+- **Frontmatter schema, documented once.** `name`, `requires`, `depends-on`, plus `tags` for filtering (`cli`, `api`, `worker`, `browser`). **No `drift-anchors` field** — drift anchoring lives in `drift.lock`, not in scenario frontmatter. The frontmatter stays small.
 - **Scenario template structure.** Frontmatter → Goals → Prerequisites → numbered Steps (each with **Action**, **Expected**, **Verify**) → Cleanup. The heading vocabulary is fixed up-front in the template, so authors do not drift.
-- **Examples track the real app templates.** Each `_example-*.md` step that mentions code uses `@./` references into `docs/templates/<which>.md`, so `drift check` actually fails when those templates change. The examples earn their keep by exercising drift end-to-end.
+- **Examples track the real app templates.** Each `_example-*.md` scenario mentions its `docs/templates/<which>.md` target in prose and is bound to that target in `drift.lock`, so `drift check` fails when those templates change. The examples earn their keep by exercising drift end-to-end.
 - **Results stay gitignored.** Local run artifacts (logs, screenshots, transcripts) live under `packages/qa/results/`, gitignored except `.gitkeep`.
 - **Browser / Electron testing uses `agent-browser`.** The README points scenario authors at the existing `agent-browser` and `electron` skills rather than baking a UI driver into the qa package. The `_example-worker.md` scenario uses `agent-browser` to hit the worker's rendered output, demonstrating the calling pattern without needing a dedicated browser example.
 
@@ -73,12 +73,12 @@ Everything under `scenarios/` and `helpers/` that starts with `_` is _not_ a sce
 
 - No scenario runner, no DSL, no assertion library, no TypeScript at first land — the template ships prose-only. The package shape leaves room for `src/` to appear later without re-org.
 - No Effect-TS patterns inside `packages/qa` (it is not a code package _yet_), so the ast-grep rules do not apply and there is nothing for them to enforce.
-- No `drift-anchors` YAML field. Anchoring stays invisible via `@./` inline references; the frontmatter does not grow.
+- No `drift-anchors` YAML field. Anchoring stays in `drift.lock`; the frontmatter does not grow.
 
 ## Phases
 
 1. **Land the skeleton.** Create `packages/qa/` with `README.md`, `package.json`, `scenarios/_template.md`, `helpers/_template.md`, `results/.gitkeep`, `.gitignore`. Wire `docs/testing/qa.md` and update the index tables in `AGENTS.md` / `docs/README.md`.
-2. **Add the three `_example-*` scenarios.** One per template (cli, api, worker). Each uses `@./` references into `docs/templates/*` so drift catches template drift.
+2. **Add the three `_example-*` scenarios.** One per template (cli, api, worker). Each is bound to `docs/templates/*` so drift catches template drift.
 3. **Add the three `_example-*` helpers.** `setup-test-dir`, `bootstrap-env`, `cleanup`.
 4. **Run `drift link` over the package** to stamp the anchors and verify `drift check` is clean.
 
@@ -86,6 +86,6 @@ Each phase is independently mergeable; phase 1 already provides a usable surface
 
 ## Decisions locked in
 
-1. **Examples target `docs/templates/`** (cli, api, worker) one-for-one, with inline `@./` references so drift catches template drift.
-2. **No `drift-anchors` frontmatter field** — anchors are invisible, handled by inline `@./` references in the scenario prose. Drift runs unchanged.
+1. **Examples target `docs/templates/`** (cli, api, worker) one-for-one, with explicit drift bindings so drift catches template drift.
+2. **No `drift-anchors` frontmatter field** — anchors are handled by `drift.lock`. Drift runs unchanged.
 3. **`packages/qa`** — chosen, leaving room for programmatic additions (runner, agent-driven executor) under the same package later.

@@ -63,23 +63,22 @@ observable checks over implementation guesses.
 
 ## Drift References
 
-When a scenario depends on a template, source file, or doc section, mention it inline with an `@./`
-path so `drift link` can bind the scenario to that target. For example:
+When a scenario depends on a template, source file, or doc section, mention that target in prose and
+bind it explicitly with `drift link <scenario> <target>`. For example:
 
 ```markdown
-The CLI structure comes from @./docs/templates/cli.md.
+The CLI structure comes from docs/templates/cli.md.
 ```
 
 After adding or changing scenarios, refresh the lockfile and verify:
 
 ```bash
-drift link packages/qa/scenarios/<scenario>.md
+drift link packages/qa/scenarios/<scenario>.md <target-path>
 drift check
 ```
 
-`drift link <doc>` walks the doc, picks up every inline `@./` reference, and stamps them in
-`drift.lock`. No explicit target argument is needed for inline references — that is what makes
-anchoring invisible to the reader. If a linked template or source file changes later, `drift check`
+Targetless `drift link <doc>` refreshes bindings that already exist in `drift.lock`; it does not
+discover new prose references. If a linked template or source file changes later, `drift check`
 flags the scenario for review.
 
 ## Helpers

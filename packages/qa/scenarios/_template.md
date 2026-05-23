@@ -13,7 +13,8 @@ section with product-specific behavior.
 ## Goals
 
 - State the user-visible behavior this scenario validates.
-- Name any template, source file, or doc the scenario depends on with an inline `@./` reference.
+- Name any template, source file, or doc the scenario depends on, then bind it with
+  `drift link <scenario> <target>`.
 
 ## Prerequisites
 
