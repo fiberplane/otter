@@ -21,7 +21,7 @@ A prose-first scenario model — markdown files with small YAML frontmatter, reu
 
 ### Package name
 
-The package is named `packages/qa` (not `packages/qa-scenarios` or similar) so programmatic siblings can be added later — a runner, an agent-driven executor — without renaming the package. The initial drop ships prose-only and leaves room for `src/` to appear later.
+The package is named `packages/qa` so programmatic siblings can be added later — a runner, an agent-driven executor — without renaming the package. The initial drop ships prose-only and leaves room for `src/` to appear later.
 
 ### Improvements baked in from day one
 
