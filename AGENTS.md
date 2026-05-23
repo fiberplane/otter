@@ -4,11 +4,11 @@ Effect.ts monorepo template with agent-friendly tooling for code quality, docume
 
 ## Philosophy
 
-**Explicit control flow.** Every branch handled, every error typed. `TaggedError` gives errors identity, `catchTag` forces handling by name. No silent catches, no untyped throws, no bare `new Error`.
+**Explicit control flow.** Every branch handled, every error typed. `TaggedError` gives errors identity, `catchTag` forces handling by name. No silent `Effect.catchAll` recoveries, no `throw` inside `Effect.gen`, no bare `new Error`.
 
-**Code shape enforcement.** ast-grep rules enforce architecture, not just style. Errors live in `errors.ts`. External SDK wrappers live in adapter files. `runPromise` only appears at entry points. The rules define the shape of the codebase — read them to understand the architecture.
+**Code shape enforcement.** ast-grep rules enforce selected architecture cases, not just style. Tagged error definitions live in `errors.ts`. External SDK wrappers should live in adapter files. `Runtime.runPromise` belongs at entry points; avoid `Effect.runPromise` / `Effect.runSync` in Effect code. Current rules catch selected boundary anti-patterns; read the rules and `docs/patterns/boundaries.md` to understand the architecture.
 
-**Runtime observability.** Structured logging with span context, traces at every boundary. Run with `EFFECT_TRACE=1` to see the full call tree on stdout. The first two pillars enforce the preconditions that make this work.
+**Runtime observability.** Structured logging with span context and templates that expect spans at boundaries. When the tracing layer and console exporter are wired, `EFFECT_TRACE=1` enables span output on stdout.
 
 ## Conventions
 
