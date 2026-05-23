@@ -56,7 +56,7 @@ rules/          ast-grep lint rules (shared + Effect-specific)
 
 `packages/qa` provides a prose-first scenario surface for validating scaffolded CLIs, APIs, workers,
 and browser-visible flows. Scenarios are markdown files with small YAML frontmatter, reusable helper
-docs, gitignored local results, and inline drift references to the templates or code they exercise.
+docs, gitignored local results, and explicit drift bindings to the templates or code they exercise.
 
 Start with `packages/qa/README.md` for the authoring guide and examples, and
 `docs/testing/qa.md` for when to use QA scenarios versus code-level tests.

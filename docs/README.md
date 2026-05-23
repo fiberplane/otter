@@ -26,10 +26,10 @@ System of record for the repository. AGENTS.md is the map, this directory is the
 
 Skills live in two places:
 
-- `.claude/skills/` — repo-specific skills, versioned with the code. Techniques that reference this codebase's tools, scripts, or conventions.
-- `~/.claude/skills/` — personal skills, portable across repos. General techniques not tied to any codebase.
+- `.agents/skills/` — repo-specific skills, versioned with the code. Techniques that reference this codebase's tools, scripts, or conventions.
+- User-level skills outside the repo — personal skills, portable across repos. General techniques not tied to any codebase.
 
-Overlap rule: if a pattern describes our codebase (our Effect conventions, our ast-grep rules), it belongs in docs/. If it teaches a technique for working on this codebase (how to run codemods here), it belongs in `.claude/skills/`. If it's a general technique (how ast-grep works), it belongs in `~/.claude/skills/`.
+Overlap rule: if a pattern describes our codebase (our Effect conventions, our ast-grep rules), it belongs in docs/. If it teaches a technique for working on this codebase (how to run codemods here), it belongs in `.agents/skills/`. If it's a general technique (how ast-grep works), it belongs in a user-level skill outside the repo.
 
 ### docs/ vs app READMEs
 
@@ -110,14 +110,15 @@ Architecture notes are added as apps and packages are built. This directory star
 ### proposals/
 
 - `active/` -- In-progress design docs
-- `completed/` -- Shipped designs kept for historical context, including
-  [packages-qa.md](proposals/completed/packages-qa.md)
+- `completed/` -- Shipped designs kept for historical context
 
 ### experiments/
 
 Feasibility notes and demo evidence live here until they graduate into proposals or architecture.
 
 ### testing/
+
+Validation patterns, test infrastructure notes, and QA scenario indexes live here.
 
 | Doc                    | Topic                                                     |
 | ---------------------- | --------------------------------------------------------- |

@@ -45,7 +45,7 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
 
    **Action:** Run the worker development command with local queue settings.
 
-   **Expected:** The process starts a message loop and logs readiness.
+   **Expected:** The process reaches the scaffold's documented local ready state.
 
    **Verify:** Save startup logs and the process command in `packages/qa/results/`.
 
@@ -59,13 +59,12 @@ This is an example scenario. Delete or replace it when real worker scenarios exi
    **Verify:** Capture logs or state proving the handler ran according to
    `docs/templates/worker.md`.
 
-4. Inspect the optional status UI.
+4. Inspect optional browser-visible output.
 
    **Action:** If the worker serves HTML, open the local status URL with `agent-browser`. If testing
-   an already-running Electron shell, connect with a CDP endpoint such as
-   `agent-browser --cdp ws://localhost:9222`.
+   an already-running Electron shell, connect to its CDP port with `agent-browser connect 9222`.
 
-   **Expected:** The page shows the worker as running and reflects the processed message.
+   **Expected:** The page shows the worker-visible status implemented by the scaffold.
 
    **Verify:** Save a screenshot or browser observation notes in `packages/qa/results/`.
 

@@ -52,7 +52,8 @@ Refresh all anchors in the doc to snapshot current state:
 drift link docs/my-doc.md
 ```
 
-This updates provenance on all bindings in `drift.lock` for that doc, including inline `@./` references.
+This updates provenance on all bindings in `drift.lock` for that doc. It does not discover new
+bindings from prose; add those explicitly with `drift link <doc-path> <target>`.
 
 ## When you create new code
 

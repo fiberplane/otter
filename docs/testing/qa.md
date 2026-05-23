@@ -5,9 +5,9 @@ behavior needs validation above unit tests: CLI smoke flows, HTTP API checks, wo
 handling, browser-visible status pages, or end-to-end scaffolding checks.
 
 Scenarios are markdown files with small YAML frontmatter and numbered steps. They are meant to be
-readable by humans and executable by agents. When a scenario depends on a template or source file,
-bind that relationship explicitly with `drift link <scenario> <target>` so drift can flag the
-scenario when the exercised target changes.
+readable by humans and structured enough for agents to follow. When a scenario depends on a template
+or source file, bind that relationship explicitly with `drift link <scenario> <target>` so drift can
+flag the scenario when the exercised target changes.
 
 Write a QA scenario when:
 

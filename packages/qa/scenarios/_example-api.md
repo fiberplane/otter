@@ -16,7 +16,7 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
 ## Goals
 
-- Confirm an app scaffolded from the API template starts and serves a basic route.
+- Confirm an app scaffolded from the API template starts and serves one scaffolded route.
 - Keep the scenario tied to `docs/templates/api.md` so template changes prompt QA review.
 
 ## Prerequisites
@@ -40,23 +40,24 @@ This is an example scenario. Delete or replace it when real API scenarios exist.
 
 2. Start the API locally.
 
-   **Action:** Run the API development command on an unused local port.
+   **Action:** Run the scaffolded app's API development command on an unused local port.
 
-   **Expected:** The process stays running and reports that it is ready to accept requests.
+   **Expected:** The process reaches the scaffold's documented local ready state.
 
    **Verify:** Save the startup command, port, and logs in `packages/qa/results/`.
 
 3. Exercise a route.
 
-   **Action:** Send an HTTP request to the health or sample route.
+   **Action:** Send an HTTP request to a route implemented by the scaffold, such as the health
+   route described by the template's project structure.
 
-   **Expected:** The route returns the documented success status and response body.
+   **Expected:** The route returns the success status and response body implemented by the scaffold.
 
    **Verify:** Capture the full request and response, including status, headers, and body.
 
 4. Exercise an error response.
 
-   **Action:** Send a request that triggers a documented validation or not-found error.
+   **Action:** Send a request that triggers a scaffolded validation or not-found error.
 
    **Expected:** The boundary maps the tagged error to the documented HTTP status.
 
