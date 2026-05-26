@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "lint:ast": "ast-grep scan",
     "lint:drift": "drift lint",
-    "test": "bun run --filter '*' test",
+    "test": "bun run --filter '*' --if-present test",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "typecheck": "tsgo --noEmit",

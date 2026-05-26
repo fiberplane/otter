@@ -4,16 +4,17 @@ Effect.ts monorepo template with agent-friendly tooling for code quality, docume
 
 ## Philosophy
 
-**Explicit control flow.** Every branch handled, every error typed. `TaggedError` gives errors identity, `catchTag` forces handling by name. No silent catches, no untyped throws, no bare `new Error`.
+**Explicit control flow.** Every branch handled, every error typed. `TaggedError` gives errors identity, `catchTag` forces handling by name. No silent `Effect.catchAll` recoveries, no `throw` inside `Effect.gen`, no bare `new Error`.
 
-**Code shape enforcement.** ast-grep rules enforce architecture, not just style. Errors live in `errors.ts`. External SDK wrappers live in adapter files. `runPromise` only appears at entry points. The rules define the shape of the codebase — read them to understand the architecture.
+**Code shape enforcement.** ast-grep rules enforce selected architecture cases, not just style. Tagged error definitions live in `errors.ts`. External SDK wrappers should live in adapter files. `Runtime.runPromise` belongs at entry points; avoid `Effect.runPromise` / `Effect.runSync` in Effect code. Current rules catch selected boundary anti-patterns; read the rules and `docs/patterns/boundaries.md` to understand the architecture.
 
-**Runtime observability.** Structured logging with span context, traces at every boundary. Run with `EFFECT_TRACE=1` to see the full call tree on stdout. The first two pillars enforce the preconditions that make this work.
+**Runtime observability.** Structured logging with span context and templates that expect spans at boundaries. When the tracing layer and console exporter are wired, `EFFECT_TRACE=1` enables span output on stdout.
 
 ## Conventions
 
 - `apps/` — Deployable applications (CLIs, APIs, workers)
 - `packages/` — Internal shared packages consumed by apps
+- `packages/qa/` — Prose-first QA scenarios and helpers; see `docs/testing/qa.md`
 - Each app and package has its own `package.json` and `tsconfig.json` extending the root
 - **Boundary convention**: Adapter files (`*.adapter.ts` or `adapters/`) wrap external SDKs and services that don't have Effect abstractions. Effect platform services (`FileSystem`, `HttpClient`, etc.) are already traced and injectable — use them freely in interior code. See `docs/patterns/boundaries.md`.
 - **Schema-first at boundaries**: All external data (HTTP bodies, JSON files, messages) must be validated through `Schema.decodeUnknown` before use. No `as` casts or typed assignments on parsed data, no bare `JSON.parse`. See `docs/patterns/data-validation.md`.
@@ -39,8 +40,8 @@ bun run lint:ast                  # ast-grep scan (custom rules)
 bun run lint:drift                # drift lint (stale spec check)
 bun run format                    # oxfmt
 bun run typecheck                 # tsgo --noEmit
-bun run check                     # all of the above
-bun run test                      # Tests (all workspaces)
+bun run check                     # lint + ast-grep + drift + typecheck
+bun run test                      # Run workspace test scripts when present
 EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 ```
 
@@ -54,6 +55,7 @@ EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 | Coding style                     | `docs/patterns/coding-style.md`            |
 | Observability setup              | `docs/patterns/observability.md`           |
 | App templates (CLI, API, worker) | `docs/templates/`                          |
+| QA scenarios                     | `docs/testing/qa.md`, `packages/qa/`       |
 | Architecture notes               | `docs/architecture/`                       |
 | Proposals (active designs)       | `docs/proposals/active/`                   |
 | Experiments and demo evidence    | `docs/experiments/`                        |
@@ -69,7 +71,7 @@ EFFECT_TRACE=1 bun run <command>  # Enable trace + structured log output
 - **oxfmt** — Config in `.oxfmtrc.json`. 2-space indent, 100-char lines, double quotes, import sorting.
 - **tsgo** — TypeScript native compiler (preview). Uses root `tsconfig.json`.
 - **ast-grep** — Custom rules in `rules/`. These enforce the architectural patterns described above — see `docs/patterns/effect.md` for the full rule table.
-- **drift** — Binds specs in `docs/` to source files. `drift lint` flags stale specs, `drift link <spec>` re-stamps.
+- **drift** — Binds markdown docs and scenarios to source files or templates. `drift lint` flags stale specs, `drift link <spec>` re-stamps.
 
 **After writing any code**, run `bun run check`.
 
