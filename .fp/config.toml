@@ -6,4 +6,7 @@ prefix = "OTTER"
 # Extension config
 [extensions.check-before-done]
 # Default: "bun run check" — disabled until workspace packages exist
+# Footgun: FP Desktop runs extensions from a GUI process, so shell-managed PATH entries
+# like ~/.bun/bin may be missing. If checks are re-enabled, prefer an absolute Bun path
+# or confirm Desktop can spawn the configured command before relying on done-transition checks.
 checks = ""
